@@ -1,7 +1,7 @@
-from vectorize import vectorize
+#from vectorize import vectorize
 from pathlib import Path
 # import pyinotify
-import pypdfium2 as pdfium
+from markitdown import MarkItDown
 import chardet
 
 
@@ -36,29 +36,19 @@ def getFileText(filePath: str):
 			with open(filePath, "r", encoding=encoding) as file:
 				text = file.read()
 			return text
-		case ".docx":
-
-			return 
-		case ".xlsx":
-			return 
-		case ".pptx":
-			return 
-		case ".pdf":
-			pdf = pdfium.PdfDocument(filePath)
-			text = ""
-			for page in pdf:
-				textpage = page.get_textpage()
-				text += textpage.get_text_range()
-			return text
+		case ".docx" | ".xlsx" | ".pptx" | ".pdf":
+			md = MarkItDown(enable_plugins=False)
+			result = md.convert(filePath)
+			return result.text_content
 	return ""
 
 
 def detect(file = ""):
 	# 内部テキストの変更がなければ、フラグなどのみ編集
-	
+
 	# ファイル内容をテキストとして取得
 	text = getFileText(file)
-
+	
 	# ファイル内容を登録するために、Vectorを取得
 	#vector = vectorize(text)
 	
@@ -67,7 +57,7 @@ def detect(file = ""):
 	# SQLに反映
 
 def main():
-	pass
+	detect()
 #	wm = pyinotify.WatchManager()
 #	mask = pyinotify.IN_DELETE | pyinotify.IN_CREATE | pyinotify.IN_MODIFY
 #	handler = EventHandler()
