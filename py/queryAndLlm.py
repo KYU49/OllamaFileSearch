@@ -1,4 +1,4 @@
-from vectorize import vectorize
+from vectorize import vectorize, cos_sim
 
 def main(prompt = ""):
 	# ユーザーの入力内容をvector化

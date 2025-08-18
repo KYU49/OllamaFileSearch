@@ -1,0 +1,12 @@
+[Unit]
+Description=file_detector_deamon
+
+[Service]
+ExecStart=/usr/local/bin/OllamaFileSearch/py/.venv/bin/python /usr/local/bin/OllamaFileSearch/py/fileDetector.py
+WorkingDirectory=/usr/local/bin/OllamaFileSearch/py
+User=root
+Restart=always
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
