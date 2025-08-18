@@ -30,3 +30,6 @@ build/
 
 # Ignore .continue directory
 .continue/
+
+# cache of transformers
+.cache/

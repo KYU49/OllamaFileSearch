@@ -1,27 +1,27 @@
-from transformers import BertTokenizer, BertModel
 import torch
+from transformers import AutoTokenizer, AutoModel, pipeline
+import numpy as np
 
-def vecterize(text):
+# # Requirements
+# uv add flash-attn --no-build-isolation
+# uv add protobuf
+# uv add sentencepiece
+
+def vectorize(text):
 	# BERTトークナイザーのロード
-	tokenizer = BertTokenizer.from_pretrained("cl-tohoku/bert-base-japanese")
-
+	tokenizer = AutoTokenizer.from_pretrained("sbintuitions/modernbert-ja-310m", torch_dtype=torch.bfloat16)
 	# BERTモデルのロード
-	model = BertModel.from_pretrained("cl-tohoku/bert-base-japanese")
-
-	# 文節ごとに区切る処理（MeCabを使っても良いが、BERTのトークナイザーでそのまま処理可能）
-	inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True)
+	model = AutoModel.from_pretrained("sbintuitions/modernbert-ja-310m", torch_dtype=torch.bfloat16)
+	extractor = pipeline(model=model, task = "feature-extraction", tokenizer = tokenizer)
 
 	# BERTでベクトル化
-	with torch.no_grad():
-		outputs = model(**inputs)
-
-	# BERTの出力（[CLS]トークンのベクトル）
-	last_hidden_states = outputs.last_hidden_state
-
-	# 最後の隠れ層の状態を取り出す (shape: (batch_size, sequence_length, hidden_size))
-	sentence_embedding = last_hidden_states.mean(dim=1)  # 平均を取ることで文全体の埋め込みベクトル
-
-	# 768次元ベクトル（文全体の埋め込み）
-	sentence_embedding = sentence_embedding.squeeze().numpy()
+	features = extractor(text)
+	token_vectors = features[0]
+	cls_vector = np.mean(token_vectors, axis=0)
 	
-	return sentence_embedding
+	return cls_vector
+
+def cos_sim(v1, v2):
+	return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
+
+
