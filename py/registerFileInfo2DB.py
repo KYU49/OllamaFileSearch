@@ -77,3 +77,9 @@ def main():
 
 if __name__ == "__main__":
 	main()
+
+#
+# This code uses the following MIT-licensed library:
+# * License: MIT License (Details: https://opensource.org/licenses/MIT)
+# - MarkItDown https://github.com/microsoft/markitdown
+# 
