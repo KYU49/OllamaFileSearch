@@ -2,6 +2,9 @@
 .DS_Store
 Thumbs.db
 
+# config file for password, etc.
+.config/
+
 # Python specific files
 __pycache__/
 *.py[oc]

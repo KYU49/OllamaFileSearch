@@ -12,4 +12,6 @@ dependencies = [
     "transformers>=4.55.2",
     "flash-attn>=2.8.3",
     "extractous>=0.3.0",
+    "psycopg2>=2.9.10",
+    "pgvector>=0.4.1",
 ]
