@@ -191,6 +191,18 @@ wheels = [
 ]
 
 [[package]]
+name = "extractous"
+version = "0.3.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/2a/12/36c9422feee01461d4db1a915857df21e431ef88ddf9d84e689dd4a984b5/extractous-0.3.0.tar.gz", hash = "sha256:ebccc7778137d6be7680660f1e880e8a1898dedca7f64ab4b354a68d22359e84", size = 179234, upload-time = "2024-12-21T09:27:56.534Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/98/50/99d6e8982ced454cc7a0e184988b63c65e199587626c45404fc7b6ab9d90/extractous-0.3.0-cp38-abi3-macosx_10_12_x86_64.whl", hash = "sha256:9f513d8da78b74ab655e659c64e287ddd653009f5af011cef0d2c8467a931e38", size = 49149827, upload-time = "2024-12-21T09:27:23.764Z" },
+    { url = "https://files.pythonhosted.org/packages/66/91/7debbfabadb88d34687bf93e23d176692bdae7e82c51180b2481710bb709/extractous-0.3.0-cp38-abi3-macosx_11_0_arm64.whl", hash = "sha256:6e43d9dee26e7cb322b6f9059f3e3565252f444b80d2f4ff2007a002fdd00727", size = 48476433, upload-time = "2024-12-21T09:27:31.835Z" },
+    { url = "https://files.pythonhosted.org/packages/6f/d9/1a3838e24f78902ca1a594110a00812134102c5cad13f889141509062481/extractous-0.3.0-cp38-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:01ef136a5901aed0e813f747989bbeaff60e4777cc77b933bef8f10de80b7dfd", size = 42277794, upload-time = "2024-12-21T09:27:39.915Z" },
+    { url = "https://files.pythonhosted.org/packages/07/a1/dd01a3abb4c4af89cf3775735948d76522233ae3550a166b8c2f7c849a52/extractous-0.3.0-cp38-abi3-win_amd64.whl", hash = "sha256:d86754320beba736f33c10227a641cce473cfb690c9e2d5ae823c917110c98ab", size = 41106822, upload-time = "2024-12-21T09:27:53.143Z" },
+]
+
+[[package]]
 name = "filelock"
 version = "3.19.1"
 source = { registry = "https://pypi.org/simple" }
@@ -779,10 +791,10 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "chardet" },
+    { name = "extractous" },
     { name = "flash-attn" },
     { name = "markitdown", extra = ["docx", "pdf", "pptx", "xls", "xlsx"] },
     { name = "protobuf" },
-    { name = "pyinotify" },
     { name = "sentencepiece" },
     { name = "transformers" },
 ]
@@ -790,10 +802,10 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "chardet", specifier = ">=5.2.0" },
+    { name = "extractous", specifier = ">=0.3.0" },
     { name = "flash-attn", specifier = ">=2.8.3" },
     { name = "markitdown", extras = ["docx", "pdf", "pptx", "xls", "xlsx"], specifier = ">=0.1.2" },
     { name = "protobuf", specifier = ">=6.32.0" },
-    { name = "pyinotify", specifier = ">=0.9.6" },
     { name = "sentencepiece", specifier = ">=0.2.1" },
     { name = "transformers", specifier = ">=4.55.2" },
 ]
@@ -806,12 +818,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/1d/b2/31537cf4b1ca98883
 wheels = [
     { url = "https://files.pythonhosted.org/packages/13/a3/a812df4e2dd5696d1f351d58b8fe16a405b234ad2886a0dab9183fb78109/pycparser-2.22-py3-none-any.whl", hash = "sha256:c3702b6d3dd8c7abc1afa565d7e63d53a1d0bd86cdc24edd75470f4de499cfcc", size = 117552, upload-time = "2024-03-30T13:22:20.476Z" },
 ]
-
-[[package]]
-name = "pyinotify"
-version = "0.9.6"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/e3/c0/fd5b18dde17c1249658521f69598f3252f11d9d7a980c5be8619970646e1/pyinotify-0.9.6.tar.gz", hash = "sha256:9c998a5d7606ca835065cdabc013ae6c66eb9ea76a00a1e3bc6e0cfe2b4f71f4", size = 60998, upload-time = "2015-06-04T15:50:23.633Z" }
 
 [[package]]
 name = "pyreadline3"

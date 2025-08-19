@@ -1,24 +1,10 @@
-#from vectorize import vectorize
+from vectorize import vectorize
 from pathlib import Path
-# import pyinotify
 from markitdown import MarkItDown
+from extractous import Extractor, TesseractOcrConfig
 import chardet
 
-
-#class Handler(pyinotify.ProcessEvent):
-#	# 参考: https://zenn.dev/lsii/scraps/58b5901c632e62
-#	# ファイル追加 (SQLへの追加)
-#	def process_IN_CREATE(self, event):
-#		pass
-#
-#	# ファイル削除 (SQLからの削除)
-#	def process_IN_DELETE(self, event):
-#		pass
-#
-#	# それ以外 (SQLの情報編集)
-#	def process_default(self, event):
-#		pass
-
+# MicrosoftのMarkItDown版。
 def getFileText(filePath: str):
 	# 特定のファイル形式か判定
 	p = Path(filePath)
@@ -42,13 +28,29 @@ def getFileText(filePath: str):
 			return result.text_content
 	return ""
 
+# OCRにはtesseract-ocrが必要。
+def getFileTextEx(filePath: str):
+	# 特定のファイル形式か判定
+	p = Path(filePath)
+	ext = p.suffix.lower()
+	match ext:
+		case ".png" | ".jpeg" | ".tiff" | ".bmp" | ".gif" | ".svg":
+			# `sudo apt install tesseract-ocr tesseract-ocr-jpn`
+			extractor = Extractor().set_ocr_config(TesseractOcrConfig().set_language("jpn"))
+			result, metadata = extractor.extract_file_to_string(filePath)
+			return result
+		case ".docx" | ".doc" | ".xlsx" | ".xls" | ".pptx" | ".ppt" | ".pdf" | ".tsv" | ".csv" | ".html" | ".txt" | ".md":
+			extractor = Extractor()
+			result, metadata = extractor.extract_file_to_string(filePath)
+			return result
+	return ""
 
 def detect(file = ""):
 	# 内部テキストの変更がなければ、フラグなどのみ編集
 
 	# ファイル内容をテキストとして取得
 	text = getFileText(file)
-	
+	print(text)	#FIXME	
 	# ファイル内容を登録するために、Vectorを取得
 	#vector = vectorize(text)
 	
@@ -57,23 +59,7 @@ def detect(file = ""):
 	# SQLに反映
 
 def main():
-	detect()
-#	wm = pyinotify.WatchManager()
-#	mask = pyinotify.IN_DELETE | pyinotify.IN_CREATE | pyinotify.IN_MODIFY
-#	handler = EventHandler()
-#	notifier = pyinotify.Notifier(wm, handler)
-#
-#
-#	# 監視対象のディレクトリ
-#	watch_target_dirs = [
-#		'/var/www/html',
-#		'/etc/httpd'
-#		]
-#
-#	for target_dir in watch_target_dirs:
-#		wdd = wm.add_watch(target_dir, mask, rec=True)
-#
-#	notifier.loop()
+	detect("../.test/test.pdf")
 
 if __name__ == "__main__":
 	main()

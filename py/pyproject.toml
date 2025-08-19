@@ -11,5 +11,5 @@ dependencies = [
     "sentencepiece>=0.2.1",
     "transformers>=4.55.2",
     "flash-attn>=2.8.3",
-    "pyinotify>=0.9.6",
+    "extractous>=0.3.0",
 ]
