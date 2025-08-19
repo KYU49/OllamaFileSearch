@@ -1,0 +1,9 @@
+[Unit]
+Description=Watch file changes for OllamaFileSearch
+
+[Path]
+PathModified=/mnt/d/hoge
+# 監視したいディレクトリを設定
+
+[Install]
+WantedBy=multi-user.target

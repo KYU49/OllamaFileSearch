@@ -1,0 +1,13 @@
+[Unit]
+Description=Watch file changes for OllamaFileSearch
+
+[Service]
+ExecStart=/usr/local/bin/fileWatcherHandler.sh
+WorkingDirectory=/usr/local/bin/OllamaFileSearch/py
+User=root
+Restart=always
+Type=oneshot
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target

@@ -54,6 +54,10 @@ def detect(file = ""):
 	# ファイル内容を登録するために、Vectorを取得
 	#vector = vectorize(text)
 	
+	# ファイル内容の簡単な説明をLLMで作成
+
+	# ファイルにscikit-Ollamaでラベル付け
+
 	# 変更があったファイルについて、変更の種類によって場合分けし、変更をDBに反映するSQLを生成
 
 	# SQLに反映
