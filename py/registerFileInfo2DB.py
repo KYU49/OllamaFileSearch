@@ -49,15 +49,14 @@ def getFileTextEx(filePath: str):
 			return result
 	return ""
 
-def db_cos_sim_search(query_vec):
+def db_cos_sim_search(queryVec):
 	with open("../.config/secret.yaml", "r") as f:
 		secrets = yaml.safe_load(f)
 	with psycopg2.connect(f"dbname={secrets["db_name"]} user={secrets["db_user"]} password={secrets["db_pass"]} host={secrets["db_host"]} port={secrets["db_port"]}") as con:
 		register_vector(con)
 		with con.cursor() as c:
 			c.execute("SELECT * FROM tbl ORDER BY vec <=> %s LIMIT 100", (queryVec, ))
-			pd.set_option("display.max_rows", 100) #FIXME
-			print(c.fetchall()) #FIXME
+			return c.fetchall()
 
 
 def db_insert(filePath, text, description, label, lastModified, queryVec):
