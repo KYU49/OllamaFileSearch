@@ -5,13 +5,32 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "numpy>=2.1.2",
     "chardet>=5.2.0",
     "markitdown[docx,pdf,pptx,xls,xlsx]>=0.1.2",
     "protobuf>=6.32.0",
     "sentencepiece>=0.2.1",
     "transformers>=4.55.2",
-    "flash-attn>=2.8.3",
     "extractous>=0.3.0",
     "psycopg2>=2.9.10",
     "pgvector>=0.4.1",
+    "torch==2.8.0+cu129",
+    "torchvision",
+    "flash-attn>=2.8.3",
 ]
+
+[tool.uv.sources]
+torch = { index = "torch-cuda" }
+torchvision = { index = "torch-cuda" }
+
+[[tool.uv.index]]
+name = "torch-cuda"
+url = "https://download.pytorch.org/whl/cu129"
+explicit = true
+
+
+[tool.uv.extra-build-dependencies]
+flash-attn = [{ requirement = "torch", match-runtime = true }]
+
+[tool.uv.extra-build-variables]
+flash-attn = { FLASH_ATTENTION_SKIP_CUDA_BUILD = "TRUE" }
