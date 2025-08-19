@@ -1,4 +1,4 @@
-from py.databaseFunction import db_cos_sim_search, db_insert_file_info
+from databaseFunction import db_cos_sim_search, db_insert
 from getFileText import getFileText
 from vectorize import vectorize
 
@@ -20,7 +20,7 @@ def detect(file = ""):
 	# SQLに反映
 
 def main():
-	detect("../.test/test.pdf")
+	detect(".test/test.pdf")
 
 if __name__ == "__main__":
 	main()
