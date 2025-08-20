@@ -1,12 +1,47 @@
+from enum import Enum
 from pathlib import Path
-from markitdown import MarkItDown
-from extractous import Extractor, TesseractOcrConfig
-from langchain_community.document_loaders import PyPDFium2Loader, BSHTMLLoader
-from langchain_community.document_loaders.text import TextLoader
-import chardet
+from langchain_core.documents import Document
 
 # Langchain版 参考: https://note.com/jolly_azalea818/n/n763880f1668a
-def getFileText(filaPath: str):
+class Method(Enum):
+	LANG_CHAIN = 1
+	MARK_IT_DOWN = 2
+	EXTRACTOUS = 3
+
+# 基本はこれを呼び出す。listではなく、まとめて返す。
+def getFileText(filePath: str, method=Method.LANG_CHAIN):
+
+	match method:
+		case Method.LANG_CHAIN:
+			func = getFileTextLangChain
+		case Method.MARK_IT_DOWN:
+			func = getFileTextMID
+		case Method.EXTRACTOUS:
+			func = getFileTextEx
+		case _:
+			return None
+	docs = func(filePath)
+
+	# ページ内容を結合
+	fullText = "\n".join(doc.page_content for doc in docs)
+	
+	# メタデータは最初のドキュメントからコピー（必要に応じて調整可能）
+	mergedMetadata = docs[0].metadata.copy()
+	
+	# 新しい Document として結合
+	mergedDoc = Document(
+		page_content=fullText,
+		metadata=mergedMetadata
+	)
+	return mergedDoc
+
+
+
+def getFileTextLangChain(filePath: str):
+	import MarkItDownLoader
+	from langchain_community.document_loaders import PyPDFium2Loader, BSHTMLLoader
+	from langchain_community.document_loaders.text import TextLoader
+
 	# 特定のファイル形式か判定
 	p = Path(filePath)
 	ext = p.suffix.lower()
@@ -19,10 +54,10 @@ def getFileText(filaPath: str):
 		case ".html":
 			return BSHTMLLoader(filePath).load()
 		case ".docx" | ".xlsx" | ".pptx":
-			return 
+			return MarkItDownLoader(filePath).load()
 		case ".pdf":
 			return PyPDFium2Loader(filePath).load()
-	return ""
+	return []
 
 
 # MicrosoftのMarkItDown版。
@@ -33,6 +68,7 @@ def getFileTextMID(filePath: str):
 
 	match ext:
 		case ".txt" | ".md" | ".html":
+			import chardet
 			text = ""
 			# 文字コードの判定
 			with open(filePath, "rb") as file:
@@ -44,6 +80,8 @@ def getFileTextMID(filePath: str):
 				text = file.read()
 			return text
 		case ".docx" | ".xlsx" | ".pptx" | ".pdf":
+			from markitdown import MarkItDown
+
 			md = MarkItDown(enable_plugins=False)
 			result = md.convert(filePath)
 			return result.text_content
@@ -51,6 +89,7 @@ def getFileTextMID(filePath: str):
 
 # OCRにはtesseract-ocrが必要。
 def getFileTextEx(filePath: str):
+	from extractous import Extractor, TesseractOcrConfig
 	# 特定のファイル形式か判定
 	p = Path(filePath)
 	ext = p.suffix.lower()

@@ -1,43 +1,26 @@
-from typing import AsyncIterator, Iterator
-
+from typing import List
+import os
 from langchain_core.document_loaders import BaseLoader
 from langchain_core.documents import Document
+from markitdown import MarkItDown
 
+class MarkItDownLoader(BaseLoader):
+	"""LangChain Custom Document Loader for Microsoft MarkItDown."""
+	
+	def __init__(self, file_path: str):
+		if not os.path.exists(file_path):
+			raise FileNotFoundError(f"File not found: {file_path}")
+		self.file_path = file_path
 
-class CustomDocumentLoader(BaseLoader):
-    def __init__(self, file_path: str) -> None:
-        self.file_path = file_path
+	def load(self) -> List[Document]:
+		"""同期的にファイルを読み込み、LangChainのDocument形式で返す"""
+		# MarkItDownでファイルを読み込む
+		md = MarkItDown(self.file_path)
+		text = md.get_text()  # get_text() でテキスト抽出
+		
+		# Documentに変換
+		return [Document(page_content=text, metadata={"source": self.file_path})]
 
-    def lazy_load(self) -> Iterator[Document]:  # <-- Does not take any arguments
-        """A lazy loader that reads a file line by line.
-
-        When you're implementing lazy load methods, you should use a generator
-        to yield documents one by one.
-        """
-        with open(self.file_path, encoding="utf-8") as f:
-            line_number = 0
-            for line in f:
-                yield Document(
-                    page_content=line,
-                    metadata={"line_number": line_number, "source": self.file_path},
-                )
-                line_number += 1
-
-    # alazy_load is OPTIONAL.
-    # If you leave out the implementation, a default implementation which delegates to lazy_load will be used!
-    async def alazy_load(
-        self,
-    ) -> AsyncIterator[Document]:  # <-- Does not take any arguments
-        """An async lazy loader that reads a file line by line."""
-        # Requires aiofiles
-        # https://github.com/Tinche/aiofiles
-        import aiofiles
-
-        async with aiofiles.open(self.file_path, encoding="utf-8") as f:
-            line_number = 0
-            async for line in f:
-                yield Document(
-                    page_content=line,
-                    metadata={"line_number": line_number, "source": self.file_path},
-                )
-                line_number += 1
+	async def aload(self) -> List[Document]:
+		"""非同期読み込み"""
+		return self.load()

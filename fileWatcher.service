@@ -1,13 +1,17 @@
 [Unit]
 Description=Watch file changes for OllamaFileSearch
+After=network.target
 
 [Service]
+Type=simple
 ExecStart=/usr/local/bin/fileWatcherHandler.sh
-WorkingDirectory=/usr/local/bin/OllamaFileSearch/py
+WorkingDirectory=/usr/local/lib/OllamaFileSearch/py
 User=root
 Restart=always
-Type=oneshot
-TimeoutStartSec=300
+RestartSec=5s
+# 標準出力をジャーナルに出力: `sudo journalctl -u ollamaWatcher.service -f`で確認可能
+StandardOutput=journal
+StandardError=journal
 
 [Install]
 WantedBy=multi-user.target

@@ -13,6 +13,7 @@ echo "#!/bin/bash" > fileWatcherHandler.sh
 echo "" >> fileWatcherHandler.sh
 echo "${filePath}OllamaFileSearch/py/.venv/bin/python ${filePath}OllamaFileSearch/py/fileDetector.py" >> fileWatcherHandler.sh
 
+sudo apt install inotify-tools
 sudo apt install libpq-dev
 wget -qO- https://astral.sh/uv/install.sh | sh
 
