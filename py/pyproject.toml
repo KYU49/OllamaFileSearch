@@ -17,6 +17,8 @@ dependencies = [
     "torch==2.8.0+cu129",
     "torchvision",
     "flash-attn>=2.8.3",
+    "langchain>=0.3.27",
+    "langchain-ollama>=0.3.6",
 ]
 
 [tool.uv.sources]

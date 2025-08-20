@@ -3,14 +3,28 @@ from markitdown import MarkItDown
 from extractous import Extractor, TesseractOcrConfig
 import chardet
 
+# Langchain版
+def getFileText(filaPath: str):
+	# 特定のファイル形式か判定
+	p = Path(filePath)
+	ext = p.suffix.lower()
+
+	# 参考: https://zenn.dev/chips0711/articles/25c11940a999a1
+
+	match ext:
+		case ".txt" | ".md" | ".html":
+		case ".docx" | ".xlsx" | ".pptx" | ".pdf":
+	return ""
+
+
 # MicrosoftのMarkItDown版。
-def getFileText(filePath: str):
+def getFileTextMID(filePath: str):
 	# 特定のファイル形式か判定
 	p = Path(filePath)
 	ext = p.suffix.lower()
 
 	match ext:
-		case ".txt" | ".md":
+		case ".txt" | ".md" | ".html":
 			text = ""
 			# 文字コードの判定
 			with open(filePath, "rb") as file:
