@@ -1,6 +1,8 @@
 from pathlib import Path
 from markitdown import MarkItDown
 from extractous import Extractor, TesseractOcrConfig
+from langchain_community.document_loaders import PyPDFium2Loader, BSHTMLLoader
+from langchain_community.document_loaders.text import TextLoader
 import chardet
 
 # Langchain版
@@ -12,8 +14,10 @@ def getFileText(filaPath: str):
 	# 参考: https://zenn.dev/chips0711/articles/25c11940a999a1
 
 	match ext:
-		case ".txt" | ".md" | ".html":
-		case ".docx" | ".xlsx" | ".pptx" | ".pdf":
+		case ".txt" | ".md":
+		case ".html":
+		case ".docx" | ".xlsx" | ".pptx":
+		case ".pdf":
 	return ""
 
 

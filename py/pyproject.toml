@@ -19,6 +19,9 @@ dependencies = [
     "flash-attn>=2.8.3",
     "langchain>=0.3.27",
     "langchain-ollama>=0.3.6",
+    "langchain-community>=0.3.27",
+    "pypdfium2>=4.30.0",
+    "bs4>=0.0.2",
 ]
 
 [tool.uv.sources]
