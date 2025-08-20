@@ -5,7 +5,7 @@ from langchain_community.document_loaders import PyPDFium2Loader, BSHTMLLoader
 from langchain_community.document_loaders.text import TextLoader
 import chardet
 
-# Langchain版
+# Langchain版 参考: https://note.com/jolly_azalea818/n/n763880f1668a
 def getFileText(filaPath: str):
 	# 特定のファイル形式か判定
 	p = Path(filePath)
@@ -15,9 +15,13 @@ def getFileText(filaPath: str):
 
 	match ext:
 		case ".txt" | ".md":
+			return TextLoader(filePath, autodetect_encoding=True).load()
 		case ".html":
+			return BSHTMLLoader(filePath).load()
 		case ".docx" | ".xlsx" | ".pptx":
+			return 
 		case ".pdf":
+			return PyPDFium2Loader(filePath).load()
 	return ""
 
 
