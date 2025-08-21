@@ -3,7 +3,7 @@
 Thumbs.db
 
 # config file for password, etc.
-.config/
+.config/*
 
 # Python specific files
 __pycache__/

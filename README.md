@@ -1,5 +1,25 @@
 # Installation
 
+## Ollama
+* Install Ollama according to the [official website](https://ollama.com/download/linux).
+```bash
+curl -fsSL https://ollama.com/install.sh | sh
+```
+
+## Only under proxy environment
+* Terminal
+```bash
+sudo nano /etc/systemd/system/docker.service.d/proxy_setting.conf
+```
+* nano
+```
+[Service]
+Environment="HTTP_PROXY=http://your-proxy-address:port"
+Environment="HTTPS_PROXY=http://your-proxy-address:port"
+```
+
+## This program and the other dependencies
+
 * Run the following command on terminal.
 ```bash
 $filePath="/usr/local/lib/"
@@ -20,8 +40,8 @@ wget -qO- https://astral.sh/uv/install.sh | sh
 cd ${filePath}OllamaFileSearch/py
 uv sync
 
-mkdir .config
 touch .config/secret.yaml
+touch .config/labelList.yaml
 ```
 
 * Set user information of SQL Database to .yaml file like below.
@@ -31,6 +51,13 @@ db_user: user
 db_pass: password
 db_host: localhost
 db_port: 5432
+```
+
+* Set file label to .yaml file like below
+```.config/labelList.yaml
+- Paper
+- Experiment Manual
+- Others
 ```
 
 # Requirements

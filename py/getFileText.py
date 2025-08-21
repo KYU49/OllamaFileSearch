@@ -9,9 +9,8 @@ class Method(Enum):
 	EXTRACTOUS = 3
 
 # 基本はこれを呼び出す。listではなく、まとめて返す。
-def getFileText(filePath: str, method=Method.LANG_CHAIN):
-
-	match method:
+def getFileText(filePath: str, methodType=Method.LANG_CHAIN):
+	match methodType:
 		case Method.LANG_CHAIN:
 			func = getFileTextLangChain
 		case Method.MARK_IT_DOWN:

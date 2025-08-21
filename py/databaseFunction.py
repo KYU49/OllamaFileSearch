@@ -6,7 +6,7 @@ from pgvector.psycopg2 import register_vector
 def db_cos_sim_search(queryVec):
 	with open("../.config/secret.yaml", "r") as f:
 		secrets = yaml.safe_load(f)
-	with psycopg2.connect(f"dbname={secrets["db_name"]} user={secrets["db_user"]} password={secrets["db_pass"]} host={secrets["db_host"]} port={secrets["db_port"]}") as con:
+	with psycopg2.connect(f"dbname={secrets['db_name']} user={secrets['db_user']} password={secrets['db_pass']} host={secrets['db_host']} port={secrets['db_port']}") as con:
 		register_vector(con)
 		with con.cursor() as c:
 			c.execute("SELECT * FROM tbl ORDER BY vec <=> %s LIMIT 100", (queryVec, ))
@@ -25,7 +25,7 @@ def db_insert(filePath, text, description, label, lastModified, queryVec):
 		[lastModified],
 		[queryVec]
 	))
-	with psycopg2.connect(f"dbname={secrets["db_name"]} user={secrets["db_user"]} password={secrets["db_pass"]} host={secrets["db_host"]} port={secrets["db_port"]}") as con:
+	with psycopg2.connect(f"dbname={secrets['db_name']} user={secrets['db_user']} password={secrets['db_pass']} host={secrets['db_host']} port={secrets['db_port']}") as con:
 		register_vector(con)
 		with con.cursor() as c:
 			execute_values(c, 

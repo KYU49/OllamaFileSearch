@@ -1,19 +1,24 @@
 import sys
-from databaseFunction import db_cos_sim_search, db_insert
+import os
 from getFileText import getFileText
 from appendMetadata import appendMetadata
 from vectorize import vectorize
 from langchain.text_splitter import CharacterTextSplitter
-from langchain.vectorstores import Chroma
+from langchain_community.vectorstores import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 
 STORE_PATH = "./chroma.db"
 
-def main():
+def getFilePath():
 	# 参考: note.com/jolly_azalea818/n/n763880f1668a
 	if len(sys.argv) == 0:
-		return 
-	filePath = sys.argv[1]
+		return None
+	return sys.argv[1]
+
+def main():
+	filePath = getFilePath()
+	if (not filePath) or (not os.path.isfile(filePath)):
+		return
 
 	# ファイル内容からテキストを取得したdocument objectを取得
 	doc = getFileText(filePath)

@@ -1,5 +1,6 @@
 import os
 from promptOllama import summarize4description, labeling
+from datetime import datetime
 
 # 文書の序盤からメタデータを作成。
 def appendMetadata(doc):
@@ -7,11 +8,13 @@ def appendMetadata(doc):
 	beginning = text[:3000]	# 文字数が溢れないように最初だけをLLMに投げる
 	description = summarize4description(beginning)
 	label = labeling(beginning)
-
+	dt = datetime
+	timestamp = os.path.getmtime(doc.metadata["source"])
+	dt = datetime.fromtimestamp(timestamp)
 	doc.metadata.update({
 		"description": description,
 		"label": label,
-		"last_modified": os.path.getmtime(doc.metadata["source"]),
+		"last_modified": dt.isoformat(),	# 2025-08-21T12:34:56.123456のようになるはず。
 	})
 	return doc
 
