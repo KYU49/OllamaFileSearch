@@ -37,4 +37,6 @@ build/
 # cache of transformers
 .cache/
 
+# 開発用
+.archives/
 .test/

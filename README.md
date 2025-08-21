@@ -26,12 +26,6 @@ $filePath="/usr/local/lib/"
 
 sudo cp OllamaFileSearch ${filePath}
 sudo chmod 0755 ${filePath}OllamaFileSearch/fileWatcherHandler.sh
-sudo systemctl deamon-reload
-sudo systemctl enable ${filePath}OllamaFileSearch/fileWatcher.path
-sudo systemctl start ${filePath}OllamaFileSearch/fileWatcher.path
-echo "#!/bin/bash" > fileWatcherHandler.sh
-echo "" >> fileWatcherHandler.sh
-echo "${filePath}OllamaFileSearch/py/.venv/bin/python ${filePath}OllamaFileSearch/py/fileDetector.py" >> fileWatcherHandler.sh
 
 sudo apt install inotify-tools
 sudo apt install libpq-dev
@@ -40,8 +34,13 @@ wget -qO- https://astral.sh/uv/install.sh | sh
 cd ${filePath}OllamaFileSearch/py
 uv sync
 
+mkdir .config
 touch .config/secret.yaml
-touch .config/labelList.yaml
+
+sudo systemctl deamon-reload
+sudo systemctl enable ${filePath}OllamaFileSearch/fileWatcher.service
+sudo systemctl start ${filePath}OllamaFileSearch/fileWatcher.service
+
 ```
 
 * Set user information of SQL Database to .yaml file like below.
@@ -52,12 +51,3 @@ db_pass: password
 db_host: localhost
 db_port: 5432
 ```
-
-* Set file label to .yaml file like below
-```.config/labelList.yaml
-- Paper
-- Experiment Manual
-- Others
-```
-
-# Requirements
