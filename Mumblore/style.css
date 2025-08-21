@@ -1,0 +1,80 @@
+body {
+	font-family: Arial, sans-serif;
+	margin: 0; padding: 0;
+	display: flex; flex-direction: column; height: 100vh;
+}
+
+header {
+	background-color: #2c3e50;
+	color: white;
+	padding: 10px 20px;
+	font-size: 24px;
+	display: flex;
+	align-items: center;
+}
+
+#backBtn {
+	display: none;
+	margin-right: 10px;
+	cursor: pointer;
+	color: white;
+	font-size: 20px;
+}
+
+main {
+	flex: 1;
+	padding: 20px;
+	overflow-y: auto;
+}
+
+#chatInputContainer {
+	display: flex;
+	justify-content: center;
+	margin-top: 50px;
+}
+
+#chatInput {
+	width: 60%;
+	padding: 10px 15px;
+	font-size: 16px;
+	border-radius: 20px;
+	border: 1px solid #ccc;
+}
+
+#searchResults {
+	max-height: 50%;
+	overflow-y: auto;
+	margin-bottom: 20px;
+}
+
+.result-item {
+	border: 1px solid #ccc;
+	border-radius: 10px;
+	padding: 10px;
+	margin-bottom: 10px;
+	transition: all 0.2s;
+}
+
+.result-item.hidden { display: none; }
+
+.label-button {
+	display: inline-block;
+	margin: 5px 5px 5px 0;
+	padding: 5px 10px;
+	border-radius: 15px;
+	border: 1px solid #aaa;
+	cursor: pointer;
+	font-size: 12px;
+}
+
+.label-button.active {
+	border-color: #e74c3c;
+	color: #e74c3c;
+}
+
+#llmOutput {
+	border-top: 1px solid #ccc;
+	padding: 10px;
+	white-space: pre-wrap;
+	min-height: 100px;
+}
