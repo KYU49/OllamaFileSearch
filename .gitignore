@@ -28,6 +28,9 @@ build/
 # Log files
 *.log
 
+# Created database
+*.sqlite3
+
 # Virtual environments
 .venv
 

@@ -4,9 +4,9 @@ from getFileText import getFileText
 from appendMetadata import appendMetadata
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_community.vectorstores import Chroma
-from langchain_huggingface import HuggingFaceEmbeddings
+from ModernBertEmbeddings import ModernBERTEmbeddings
 
-STORE_PATH = "./chroma.db"
+STORE_PATH = "./chromadb"
 
 def getFilePath():
 	# 参考: note.com/jolly_azalea818/n/n763880f1668a
@@ -34,8 +34,8 @@ def main():
 	docs = text_splitter.split_documents(documents=[doc])
 
 	# Databaseに反映
-	embeddings = HuggingFaceEmbeddings(model_name="sbintuitions/modernbert-ja-310m")
-	Chroma.from_documents(
+	embeddings = ModernBERTEmbeddings()
+	db = Chroma.from_documents(
 		documents=docs,
 		embedding=embeddings,
 		persist_directory=STORE_PATH,

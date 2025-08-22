@@ -65,7 +65,7 @@ chatInput.addEventListener("keydown", async (e) => {
 		backBtn.style.display = "inline-block";
 
 		// SSE接続
-		const evtSource = new EventSource("/sse_endpoint.php", { withCredentials: false });
+		const evtSource = new EventSource("../sse_endpoint.php", { withCredentials: false });
 		evtSource.addEventListener("search", (e) => {
 			const data = JSON.parse(e.data);
 			originalResults = data.search_results;
