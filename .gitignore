@@ -29,7 +29,7 @@ build/
 *.log
 
 # Created database
-*.sqlite3
+chromadb/
 
 # Virtual environments
 .venv

@@ -1,7 +1,7 @@
 import os
 import sys
 import json
-from langchain.vectorstores import Chroma
+from langchain_chroma.vectorstores import Chroma
 from ModernBertEmbeddings import ModernBERTEmbeddings
 
 STORE_PATH = os.getcwd() + "/chromadb"
