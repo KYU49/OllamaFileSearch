@@ -21,7 +21,7 @@ db = Chroma(
 retriever = db.as_retriever(search_type="similarity", search_kwargs={"k": 20})
 
 # 検索
-docs = retriever.get_relevant_documents(prompt)
+docs = retriever.invoke(prompt)
 # JSON化してPHPに返す
 results = [{"page_content": doc.page_content, "metadata": doc.metadata} for doc in docs]
 print(json.dumps(results, ensure_ascii=False))
