@@ -17,7 +17,7 @@ $input = json_decode(file_get_contents('php://input'), true);
 $prompt = $input['prompt'] ?? '';
 
 // Chroma検索を実行
-$searchResults = shell_exec("{$pythonPath} {$baseDir}/py/search.py " . escapeshellarg($prompt));
+$searchResults = shell_exec("{$pythonPath} {$baseDir}/py/searchEndpoint.py " . escapeshellarg($prompt));
 $searchData = json_decode($searchResults, true) ?? [];
 
 // 検索結果をSSEで送信
@@ -27,7 +27,7 @@ ob_flush();
 flush();
 
 // LLM回答を生成
-$cmd = "{$pythonPath} {$baseDir}/py/genAnswer.py " . escapeshellarg(json_encode($searchData)) . " " . escapeshellarg($prompt);
+$cmd = "{$pythonPath} {$baseDir}/py/genAnswerEndpoint.py " . escapeshellarg(json_encode($searchData)) . " " . escapeshellarg($prompt);
 $process = popen($cmd, 'r');
 
 if($process) {
