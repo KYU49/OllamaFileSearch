@@ -27,6 +27,7 @@ dependencies = [
 	"pydantic>=2.11.7",
 	"chromadb>=1.0.20",
 	"hf-xet>=1.1.7",
+	"langchain-chroma>=0.2.5",
 ]
 
 [tool.uv.sources]

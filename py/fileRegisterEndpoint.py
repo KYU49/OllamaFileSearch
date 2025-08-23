@@ -3,10 +3,11 @@ import os
 from getFileText import getFileText
 from appendMetadata import appendMetadata
 from langchain.text_splitter import CharacterTextSplitter
-from langchain_community.vectorstores import Chroma
+from langchain_chroma.vectorstores import Chroma
 from ModernBertEmbeddings import ModernBERTEmbeddings
 
-STORE_PATH = "./chromadb"
+STORE_PATH = os.getcwd() + "/chromadb"
+COLLECTION_NAME = "ollama_file_collection"
 
 def getFilePath():
 	# 参考: note.com/jolly_azalea818/n/n763880f1668a
@@ -35,12 +36,22 @@ def main():
 
 	# Databaseに反映
 	embeddings = ModernBERTEmbeddings()
-	db = Chroma.from_documents(
-		documents=docs,
-		embedding=embeddings,
+	db = Chroma(
 		persist_directory=STORE_PATH,
-		collection_metadata={"hnsw:space": "cosine"}
+		embedding_function=embeddings,
+		collection_name=COLLECTION_NAME,
+		collection_metadata={"hnsw:space": "cosine"},
+		
 	)
+	# 既にあったら削除しておく
+	for d in docs:
+		source = d.metadata.get("source")
+		if source:
+			id2delete = db.get(where={"source": source})
+			if len(id2delete.get("ids")) > 0:
+				db.delete(ids = id2delete.get("ids"))
+	# 実際のinsert
+	db.add_documents(docs)
 
 if __name__ == "__main__":
 	main()

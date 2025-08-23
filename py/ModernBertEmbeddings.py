@@ -5,10 +5,8 @@ from langchain.embeddings.base import Embeddings
 import sys
 
 class ModernBERTEmbeddings(Embeddings):
-    def __init__(self, model_name="sbintuitions/modernbert-ja-310m", batch_size=8, device=None):
-        self.batch_size = batch_size
-
-        # GPU自動判定
+    def __init__(self, model_name="sbintuitions/modernbert-ja-310m", device=None):
+        # batch_sizeを削除
         self.device = device
         if self.device is None:
             if torch.cuda.is_available():
@@ -44,8 +42,7 @@ class ModernBERTEmbeddings(Embeddings):
             task="feature-extraction",
             model=self.model,
             tokenizer=self.tokenizer,
-            device=self.device,
-            batch_size=self.batch_size
+            device=self.device
         )
 
     def _vectorize_text(self, text):
@@ -56,13 +53,9 @@ class ModernBERTEmbeddings(Embeddings):
 
     def embed_documents(self, texts):
         vectors = []
-        for i in range(0, len(texts), self.batch_size):
-            batch_texts = texts[i:i+self.batch_size]
-            batch_vectors = self.extractor(batch_texts)
-            for features in batch_vectors:
-                token_vectors = features
-                pooling_vector = np.mean(token_vectors, axis=0)
-                vectors.append(pooling_vector.tolist())
+        for text in texts:  # バッチ処理を削除して1つずつ処理
+            vector = self._vectorize_text(text)
+            vectors.append(vector)
         return vectors
 
     def embed_query(self, text):
