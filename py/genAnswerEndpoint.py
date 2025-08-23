@@ -3,7 +3,7 @@ import json
 from langchain_chroma.vectorstores import Chroma
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain_ollama import OllamaLLM
-from langchain.chains import RetrievalQA
+from langchain.chains import retrieval_qa
 from langchain.callbacks.base import BaseCallbackHandler
 
 # --- 引数取得 ---
@@ -31,7 +31,7 @@ class StreamingCallbackHandler(BaseCallbackHandler):
 handler = StreamingCallbackHandler()
 
 # --- RetrievalQAチェーン作成 ---
-qa_chain = RetrievalQA.from_chain_type(
+qa_chain = retrieval_qa.from_chain_type(
 	llm=llm,
 	chain_type="stuff",
 	retriever=retriever,
