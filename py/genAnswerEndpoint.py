@@ -2,7 +2,7 @@ import sys
 import json
 from langchain_chroma.vectorstores import Chroma
 from langchain.embeddings import HuggingFaceEmbeddings
-from langchain_ollama import Ollama
+from langchain_ollama import OllamaLLM
 from langchain.chains import RetrievalQA
 from langchain.callbacks.base import BaseCallbackHandler
 
@@ -21,7 +21,7 @@ retriever = vectordb.as_retriever(search_type="similarity", search_kwargs={"k": 
 
 # --- Ollama LLM（ローカルモデル） ---
 # streaming=True を使うと逐次トークンコールバック可能
-llm = Ollama(model="gpt-oss:20b", streaming=True, temperature=0)
+llm = OllamaLLM(model="gpt-oss:20b", streaming=True, temperature=0)
 
 # --- コールバックでトークン逐次出力 ---
 class StreamingCallbackHandler(BaseCallbackHandler):
