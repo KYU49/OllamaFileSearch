@@ -8,6 +8,8 @@ let originalResults = [];
 
 const searchBtn = document.getElementById("searchBtn");
 
+PHP_ADDRESS = "../sseEndpoint.php"
+
 function startSearch() {
 	const prompt = chatInput.value.trim();
 	if (!prompt) return;
@@ -19,7 +21,7 @@ function startSearch() {
 	backBtn.style.display = "inline-block";
 
 	// SSE接続
-	const evtSource = new EventSource("/sse_endpoint.php", { withCredentials: false });
+	const evtSource = new EventSource(PHP_ADDRESS, { withCredentials: false });
 	evtSource.addEventListener("search", (e) => {
 		const data = JSON.parse(e.data);
 		originalResults = data.search_results;
@@ -36,7 +38,7 @@ function startSearch() {
 	});
 
 	// PHPにPOST送信
-	fetch("/sse_endpoint.php", {
+	fetch(PHP_ADDRESS, {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({ prompt })
@@ -65,7 +67,7 @@ chatInput.addEventListener("keydown", async (e) => {
 		backBtn.style.display = "inline-block";
 
 		// SSE接続
-		const evtSource = new EventSource("../sse_endpoint.php", { withCredentials: false });
+		const evtSource = new EventSource(PHP_ADDRESS, { withCredentials: false });
 		evtSource.addEventListener("search", (e) => {
 			const data = JSON.parse(e.data);
 			originalResults = data.search_results;
@@ -82,7 +84,7 @@ chatInput.addEventListener("keydown", async (e) => {
 		});
 
 		// PHPにPOST送信
-		fetch("/sse_endpoint.php", {
+		fetch(PHP_ADDRESS, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ prompt })
