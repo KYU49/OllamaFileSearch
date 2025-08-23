@@ -1,6 +1,6 @@
 import sys
 import json
-from langchain.vectorstores import Chroma
+from langchain_chroma.vectorstores import Chroma
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain_ollama import Ollama
 from langchain.chains import RetrievalQA
