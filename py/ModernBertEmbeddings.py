@@ -22,14 +22,6 @@ class ModernBERTEmbeddings(Embeddings):
         except ImportError:
             pass
 
-        if self.flash_attention and self.device >= 0:
-            print("Flash Attention 2 detected: 高速化を有効化")
-        else:
-            if self.device >= 0:
-                print("GPUのみ利用、Flash Attention 2なし")
-            else:
-                print("CPUモードで実行")
-
         # トークナイザーとモデルロード
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.model = AutoModel.from_pretrained(model_name)
