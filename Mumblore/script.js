@@ -1,4 +1,4 @@
-document.onload = () => {
+window.onload = () => {
 	const chatInput = document.getElementById("chatInput");
 	const searchResultsDiv = document.getElementById("searchResults");
 	const llmOutputDiv = document.getElementById("llmOutput");
@@ -22,7 +22,10 @@ document.onload = () => {
 		backBtn.style.display = "inline-block";
 
 		// SSE接続
-		const evtSource = new EventSource(PHP_ADDRESS, { withCredentials: false });
+		const evtSource = new EventSource(
+			PHP_ADDRESS + "?prompt=" + encodeURIComponent(prompt), 
+			{ withCredentials: false }
+		);
 		evtSource.addEventListener("search", (e) => {
 			const data = JSON.parse(e.data);
 			originalResults = data.search_results;
@@ -31,19 +34,22 @@ document.onload = () => {
 
 		evtSource.addEventListener("answer_token", (e) => {
 			const data = JSON.parse(e.data);
-			llmOutputDiv.textContent += data.token;
+			if(data.token){
+				llmOutputDiv.textContent += data.token;
+			}
 		});
 
 		evtSource.addEventListener("end", () => {
 			evtSource.close();
 		});
-
+		/*
 		// PHPにPOST送信
 		fetch(PHP_ADDRESS, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ prompt })
+			body: JSON.stringify({"prompt": prompt})
 		});
+		*/
 
 		chatInput.value = "";
 	}
@@ -54,46 +60,6 @@ document.onload = () => {
 	});
 	// ボタンクリックでも検索
 	searchBtn.addEventListener("click", startSearch);
-
-
-	chatInput.addEventListener("keydown", async (e) => {
-		if (e.key === "Enter") {
-			const prompt = chatInput.value.trim();
-			if (!prompt) return;
-
-			// 初期化
-			searchResultsDiv.innerHTML = "";
-			llmOutputDiv.innerHTML = "";
-			titleSpan.textContent = "検索結果";
-			backBtn.style.display = "inline-block";
-
-			// SSE接続
-			const evtSource = new EventSource(PHP_ADDRESS, { withCredentials: false });
-			evtSource.addEventListener("search", (e) => {
-				const data = JSON.parse(e.data);
-				originalResults = data.search_results;
-				renderSearchResults(originalResults);
-			});
-
-			evtSource.addEventListener("answer_token", (e) => {
-				const data = JSON.parse(e.data);
-				llmOutputDiv.textContent += data.token;
-			});
-
-			evtSource.addEventListener("end", () => {
-				evtSource.close();
-			});
-
-			// PHPにPOST送信
-			fetch(PHP_ADDRESS, {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ prompt })
-			});
-
-			chatInput.value = "";
-		}
-	});
 
 	backBtn.addEventListener("click", () => {
 		titleSpan.textContent = "LangChain + Ollama Chat";

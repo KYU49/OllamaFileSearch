@@ -6,7 +6,7 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain_chroma.vectorstores import Chroma
 from ModernBertEmbeddings import ModernBERTEmbeddings
 
-STORE_PATH = os.getcwd() + "/chromadb"
+STORE_PATH = os.path.dirname(os.path.abspath(__file__)) + "/chromadb"
 COLLECTION_NAME = "ollama_file_collection"
 
 def getFilePath():
