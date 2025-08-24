@@ -79,3 +79,26 @@ main {
 	max-width: 90vw;
 	min-height: 100px;
 }
+
+#searchBtn {
+	background-color: #4CAF50; /* 緑色 */
+	color: white; /* テキスト色 */
+	font-size: 16px; /* フォントサイズ */
+	padding: 12px 24px; /* 上下12px、左右24pxのパディング */
+	border: none; /* 枠線なし */
+	border-radius: 8px; /* 角を丸く */
+	cursor: pointer; /* ホバー時にカーソルをポインターに */
+	transition: background-color 0.3s, transform 0.3s; /* 色と押し込みアニメーション */
+}
+
+#searchBtn:hover {
+	background-color: #45a049; /* ホバー時の色 */
+}
+
+#searchBtn:active {
+	transform: translateY(2px); /* 押し込むようなエフェクト */
+}
+
+#searchBtn:focus {
+	outline: none; /* フォーカス時の枠線を消す */
+}

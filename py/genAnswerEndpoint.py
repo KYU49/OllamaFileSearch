@@ -78,55 +78,5 @@ class SSECallbackHandler(BaseCallbackHandler):
 		print("[DONE]", flush=True)
 
 for chunk in chainWithRag.stream(userPrompt, config={"callbacks": [SSECallbackHandler()]}):
-	pass  # SSEは逐次コールバックで送信されるのでここでは何もしない
+	pass	# SSEは逐次コールバックで送信されるのでここでは何もしない
 
-
-if False:
-	answer = chainWithRag.invoke(userPrompt)
-
-	respTemplate = PromptTemplate.from_template("""
-	answer: {answer}
-	source: {source}
-	""")
-
-	resp = respTemplate.invoke({
-		"answer": answer["answer"],
-		"source": answer["context"][0].metadata["source"]
-	})
-
-	print(resp.text)
-
-if(False):
-
-	qa_chain = create_retrieval_chain(llm, promptTemplate)
-	chain = create_retrieval_chain(retriever, qa_chain)
-
-	# --- コールバックでトークン逐次出力 ---
-
-	# CallbackHandlerで逐次結果を処理
-	class StreamCallbackHandler(BaseCallbackHandler):
-		def __init__(self):
-			self.output = []
-
-		def on_llm_new_token(self, token: str, **kwargs):
-			# 新しいトークンを受け取るたびに呼ばれる
-			self.output.append(token)
-			# 現在のトークンを逐次的にPHPに返す
-			sys.stdout.write(token)  # PHPにリアルタイムで返す
-			sys.stdout.flush()  # バッファを即時出力
-		# コンテキストマネージャ用のメソッドを追加
-		def __enter__(self):
-			return self
-		def __exit__(self, exc_type, exc_value, traceback):
-			# エラー処理を適切に行いたい場合はここで
-			pass
-
-	# CallbackHandlerのインスタンス化
-	callback_handler = StreamCallbackHandler()
-
-	# 結果を逐次的に出力
-	with callback_handler:
-		result = chain.call(input=prompt)
-
-	# 最後の結果を出力
-	print("\n".join(callback_handler.output))

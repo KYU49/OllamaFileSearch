@@ -15,8 +15,7 @@ db = Chroma(
 	persist_directory=STORE_PATH,
 	embedding_function=embeddings,
 	collection_name=COLLECTION_NAME,
-	collection_metadata={"hnsw:space": "cosine"},
-	
+	collection_metadata={"hnsw:space": "cosine"}
 )
 retriever = db.as_retriever(search_type="similarity", search_kwargs={"k": 20})
 
