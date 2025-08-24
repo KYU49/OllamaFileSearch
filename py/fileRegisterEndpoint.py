@@ -34,6 +34,10 @@ def main():
 	)
 	docs = text_splitter.split_documents(documents=[doc])
 
+	# 同じ文書由来のものを検索する際に、1つ目 (or 2つ目移行がヒットするなら最初)だけを表示するため。
+	for i, chunk in enumerate(docs):
+		chunk.metadata["chunk_index"] = i
+
 	# Databaseに反映
 	embeddings = ModernBERTEmbeddings()
 	db = Chroma(

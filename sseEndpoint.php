@@ -27,7 +27,8 @@ ob_flush();
 flush();
 
 // LLM回答を生成
-$cmd = "{$pythonPath} {$baseDir}/py/genAnswerEndpoint.py " . escapeshellarg(json_encode($searchData)) . " " . escapeshellarg($prompt);
+#$cmd = "{$pythonPath} {$baseDir}/py/genAnswerEndpoint.py " . escapeshellarg(json_encode($searchData)) . " " . escapeshellarg($prompt);
+$cmd = "{$pythonPath} {$baseDir}/py/genAnswerEndpoint.py " . " " . escapeshellarg($prompt);
 $process = popen($cmd, 'r');
 
 if($process) {
