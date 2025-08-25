@@ -7,9 +7,9 @@ from pydantic import BaseModel, Field
 DEFAULT_MODEL = "gpt-oss:20b"
 
 SUMMARY_PROMPT = """
-You are a concise description generator. 
-Given an input text extracted from a file, generate a 100-character summary that clearly describes the content and purpose of the file. 
-The output must be exactly the description text only, without any extra words, labels, or formatting. 
+You are a concise description generator.
+Given an input text extracted from a file, generate a summary in Japanese of exactly 150 characters that clearly explains the file's content and purpose.
+Output only the summary text, without any labels, extra words, or formatting.
 """
 
 LABELING_PROMPT = """
