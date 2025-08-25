@@ -1,8 +1,9 @@
+import os
+import sys
 import torch
 import numpy as np
 from transformers import AutoTokenizer, AutoModel, pipeline
 from langchain.embeddings.base import Embeddings
-import sys
 
 CACHE_PATH = os.path.dirname(os.path.abspath(__file__)) + "/.cache"
 class ModernBERTEmbeddings(Embeddings):
