@@ -23,8 +23,8 @@ class ModernBERTEmbeddings(Embeddings):
             pass
 
         # トークナイザーとモデルロード
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        self.model = AutoModel.from_pretrained(model_name)
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name, torch_dtype=torch.float16)
+        self.model = AutoModel.from_pretrained(model_name, torch_dtype=torch.float16)
         if self.device >= 0:
             self.model.to(torch.device("cuda"))
         self.model.eval()
