@@ -52,7 +52,7 @@ def getFileTextLangChain(filePath: str):
 			return TextLoader(filePath, autodetect_encoding=True).load()
 		case ".html":
 			return BSHTMLLoader(filePath).load()
-		case ".docx" | ".xlsx" | ".pptx":
+		case ".docx" | ".xlsx" | ".pptx" | ".msg":
 			return MarkItDownLoader(filePath).load()
 		case ".pdf":
 			return PyPDFium2Loader(filePath).load()

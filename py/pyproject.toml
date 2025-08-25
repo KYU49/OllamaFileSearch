@@ -7,16 +7,13 @@ requires-python = ">=3.13"
 dependencies = [
 	"numpy>=2.1.2",
 	"chardet>=5.2.0",
-	"markitdown[docx,pdf,pptx,xls,xlsx]>=0.1.2",
 	"protobuf>=6.32.0",
 	"sentencepiece>=0.2.1",
 	"transformers>=4.55.2",
 	"extractous>=0.3.0",
-	"psycopg2>=2.9.10",
-	"pgvector>=0.4.1",
 	"torch==2.8.0+cu129",
 	"torchvision",
-	"flash-attn>=2.8.3",
+	"flash-attn>=2.8.3; sys_platform == 'linux'",
 	"langchain>=0.3.27",
 	"langchain-ollama>=0.3.6",
 	"langchain-community>=0.3.27",
@@ -25,6 +22,10 @@ dependencies = [
 	"langchain-core>=0.3.74",
 	"langchain-huggingface>=0.3.1",
 	"pydantic>=2.11.7",
+	"chromadb>=1.0.20",
+	"hf-xet>=1.1.7",
+	"langchain-chroma>=0.2.5",
+	"markitdown[docx,outlook,pdf,pptx,xlsx]>=0.1.2",
 ]
 
 [tool.uv.sources]
