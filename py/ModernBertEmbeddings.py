@@ -4,6 +4,7 @@ from transformers import AutoTokenizer, AutoModel, pipeline
 from langchain.embeddings.base import Embeddings
 import sys
 
+CACHE_PATH = os.path.dirname(os.path.abspath(__file__)) + "/.cache"
 class ModernBERTEmbeddings(Embeddings):
     def __init__(self, model_name="sbintuitions/modernbert-ja-310m", device=None):
         # batch_sizeを削除
@@ -23,8 +24,8 @@ class ModernBERTEmbeddings(Embeddings):
             pass
 
         # トークナイザーとモデルロード
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name, torch_dtype=torch.float16)
-        self.model = AutoModel.from_pretrained(model_name, torch_dtype=torch.float16)
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name, torch_dtype=torch.float16, cache_dir=CACHE_PATH)
+        self.model = AutoModel.from_pretrained(model_name, torch_dtype=torch.float16, cache_dir=CACHE_PATH)
         if self.device >= 0:
             self.model.to(torch.device("cuda"))
         self.model.eval()
