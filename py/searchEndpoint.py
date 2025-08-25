@@ -1,8 +1,11 @@
 import os
 import sys
+import io
 import json
 from langchain_chroma.vectorstores import Chroma
 from ModernBertEmbeddings import ModernBERTEmbeddings
+
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 STORE_PATH = os.path.dirname(os.path.abspath(__file__)) + "/chromadb"
 COLLECTION_NAME = "ollama_file_collection"

@@ -169,6 +169,9 @@ class SearchViewModel {
 		});
 
 		evtSource.addEventListener("answer_token", (e) => {
+			if(e.data === "[DONE]") {
+				return;
+			}
 			const data = JSON.parse(e.data);
 			if (data.token) {
 				this.model.appendLlmOutput(data.token);
