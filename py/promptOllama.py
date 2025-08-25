@@ -26,7 +26,11 @@ Passage:
 os.environ["NO_PROXY"] = "localhost,127.0.0.1"
 
 def summarize4description(text):
-	llm = OllamaLLM(model=DEFAULT_MODEL, base_url="http://localhost:11434")
+	llm = OllamaLLM(
+		model=DEFAULT_MODEL, 
+		base_url="http://localhost:11434", 
+		temperature=0
+	)
 	return llm.invoke([
 		("system", SUMMARY_PROMPT),
 		("human", text)

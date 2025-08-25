@@ -24,7 +24,7 @@ flush();
 // POSTデータ取得
 $prompt = escapeshellarg(rawurldecode($_GET['prompt'] ?? ''));
 // Chroma検索を実行
-$searchResults = shell_exec("{$pythonPath} {$baseDir}/py/searchEndpoint.py " . $prompt);
+$searchResults = shell_exec("{$pythonPath} -u {$baseDir}/py/searchEndpoint.py " . $prompt);
 
 // 検索結果をSSEで送信
 echo "event: search\n";
