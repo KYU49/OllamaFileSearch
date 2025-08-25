@@ -43,11 +43,3 @@ sudo systemctl start ${filePath}OllamaFileSearch/fileWatcher.service
 
 ```
 
-* Set user information of SQL Database to .yaml file like below.
-```.config/secret.yaml
-db_name: vectorized_files_db
-db_user: user
-db_pass: password
-db_host: localhost
-db_port: 5432
-```
