@@ -18,7 +18,7 @@ First, determine whether the user's question is relevant to the search results.
 
 If the relevance is low or there is no meaningful connection, respond "No relevant files were found." (translated into the same language with user's question).
 
-Only if the question is relevant, generate an answer based only on the provided search results.
+Only if the question is relevant, generate an answer in HTML style (not Markdown), based only on the provided search results.
 Do not use any external knowledge outside of the search results.
 
 # Search Results

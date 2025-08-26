@@ -113,7 +113,7 @@ class SearchView {
 	}
 
 	updateLlmOutput(output) {
-		this.llmOutputDiv.textContent = output;
+		this.llmOutputDiv.innerHTML = output.replace(/\r?\n/g, "");
 	}
 
 	setTitle(title) {
