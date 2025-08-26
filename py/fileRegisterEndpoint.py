@@ -10,7 +10,7 @@ from langchain_chroma.vectorstores import Chroma
 from ModernBertEmbeddings import ModernBERTEmbeddings
 
 STORE_PATH = os.path.dirname(os.path.abspath(__file__)) + "/chromadb"
-LOCK_FILE = os.path.dirname(os.path.abspath(__file__)) + "/.cache"
+LOCK_FILE = os.path.dirname(os.path.abspath(__file__)) + "/.cache/fileRegisterQueueLoop.lock"
 LOCK_TIMEOUT = 300	# 秒
 JOB_COLLECTION = "file_jobs"
 COLLECTION_NAME = "ollama_file_collection"
