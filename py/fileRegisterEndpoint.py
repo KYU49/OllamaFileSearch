@@ -9,17 +9,38 @@ from ModernBertEmbeddings import ModernBERTEmbeddings
 STORE_PATH = os.path.dirname(os.path.abspath(__file__)) + "/chromadb"
 COLLECTION_NAME = "ollama_file_collection"
 
+# sys.argv[1]: ファイルパス; [2]: 変更内容(added/modified/deleted/unknown)
 def getFilePath():
 	# 参考: note.com/jolly_azalea818/n/n763880f1668a
 	if len(sys.argv) == 0:
 		return None
 	return sys.argv[1]
 
+def getAction():
+	if len(sys.argv) <= 1:
+		return None
+	return sys.argv[2]
+
 def main():
 	filePath = getFilePath()
-	if (not filePath) or (not os.path.isfile(filePath)):
+	action = getAction()
+	# Databaseに反映
+	embeddings = ModernBERTEmbeddings()
+	db = Chroma(
+		persist_directory=STORE_PATH,
+		embedding_function=embeddings,
+		collection_name=COLLECTION_NAME,
+		collection_metadata={"hnsw:space": "cosine"},
+	)
+	if (action == "deleted"):
+		id2delete = db.get(where={"source": filePath})
+		if len(id2delete.get("ids")) > 0:
+			db.delete(ids = id2delete.get("ids"))
 		return
 
+	if (not filePath) or (not os.path.isfile(filePath)):
+		return
+	
 	# ファイル内容からテキストを取得したdocument objectを取得
 	doc = getFileText(filePath)
 
@@ -38,15 +59,6 @@ def main():
 	for i, chunk in enumerate(docs):
 		chunk.metadata["chunk_index"] = i
 
-	# Databaseに反映
-	embeddings = ModernBERTEmbeddings()
-	db = Chroma(
-		persist_directory=STORE_PATH,
-		embedding_function=embeddings,
-		collection_name=COLLECTION_NAME,
-		collection_metadata={"hnsw:space": "cosine"},
-		
-	)
 	# 既にあったら削除しておく
 	for d in docs:
 		source = d.metadata.get("source")
