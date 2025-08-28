@@ -14,7 +14,7 @@ while (ob_get_level() > 0) {
 ob_implicit_flush(true);
 
 $baseDir = "/usr/local/lib/OllamaFileSearch";
-$pythonPath = $baseDir . "/py/.venv/Scripts/python.exe";
+$pythonPath = $baseDir . "/py/.venv/bin/python";
 
 
 # --- 実行 (SSEストリーム開始) ---
