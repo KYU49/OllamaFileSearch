@@ -41,7 +41,7 @@ uv sync
 
 sudo systemctl daemon-reload
 sudo systemctl enable ${filePath}OllamaFileSearch/fileWatcher.service
-sudo systemctl start ${filePath}OllamaFileSearch/fileWatcher.service
+sudo systemctl start fileWatcher.service
 
 ```
 
