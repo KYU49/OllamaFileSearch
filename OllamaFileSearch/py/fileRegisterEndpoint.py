@@ -1,6 +1,7 @@
 import sys
 import os
 import time
+import fcntl
 from threading import Thread, Lock
 from datetime import datetime, timedelta
 from getFileText import getFileText
@@ -11,33 +12,10 @@ from ModernBertEmbeddings import ModernBERTEmbeddings
 
 STORE_PATH = os.path.dirname(os.path.abspath(__file__)) + "/chromadb"
 LOCK_FILE = os.path.dirname(os.path.abspath(__file__)) + "/.cache/fileRegisterQueueLoop.lock"
-LOCK_TIMEOUT = 300	# 秒
 JOB_COLLECTION = "file_jobs"
 COLLECTION_NAME = "ollama_file_collection"
 MAX_RETRIES = 3
 SLEEP_INTERVAL = 5
-
-# プロセス間ロック
-def tryAcquireLock():
-	if os.path.exists(LOCK_FILE):
-		ts = os.path.getmtime(LOCK_FILE)
-		lockTime = datetime.fromtimestamp(ts)
-		if datetime.now() - lockTime > timedelta(seconds=LOCK_TIMEOUT):
-			os.remove(LOCK_FILE)
-		else:
-			return False
-	with open(LOCK_FILE, "w") as f:
-		f.write(str(time.time()))
-	return True
-
-def releaseLock():
-	if os.path.exists(LOCK_FILE):
-		os.remove(LOCK_FILE)
-
-# ロックの更新
-def refreshLock():
-	if os.path.exists(LOCK_FILE):
-		os.utime(LOCK_FILE, None)  # 現在時刻で更新
 
 class DummyEmbeddings:
 	def __init__(self, dim: int = 1):
@@ -78,9 +56,14 @@ def enqueueJob(filePath, action):
 	workerLoop()
 
 def workerLoop():
-	if not tryAcquireLock():
-		return
-	try:
+    # flock で排他ロックを確保
+    os.makedirs(os.path.dirname(LOCK_FILE), exist_ok=True)
+    with open(LOCK_FILE, "w") as lockfile:
+        try:
+            fcntl.flock(lockfile, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            return  # 他プロセスが実行中なら終了
+
 		embeddings = ModernBERTEmbeddings()
 		dbJob = Chroma(persist_directory=STORE_PATH, collection_name=JOB_COLLECTION, embedding_function=DummyEmbeddings())
 		db = Chroma(
@@ -157,11 +140,7 @@ def workerLoop():
 						texts=[""],
 						metadatas=[{**metadata, "status": "pending", "retryCount": retryCount, "error": str(e)}]
 					)
-			refreshLock()
 			time.sleep(SLEEP_INTERVAL * (2 ** (retryCount - 1)))
-		
-	finally:
-		releaseLock()
 
 if __name__ == "__main__":
 	if len(sys.argv) < 3:
