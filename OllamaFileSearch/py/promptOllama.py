@@ -44,7 +44,7 @@ def labeling(text):
 
 def loadLabels():
 	try:
-		with open("/var/www/http/OllamaFileSearch/.config/labelList.yaml", "r", encoding="utf-8") as f:
+		with open("/var/www/html/OllamaFileSearch/.config/labelList.yaml", "r", encoding="utf-8") as f:
 			labels = yaml.safe_load(f)
 			if isinstance(labels, dict):
 				labels = list(labels.values())
