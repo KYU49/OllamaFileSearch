@@ -13,7 +13,7 @@ while (ob_get_level() > 0) {
 }
 ob_implicit_flush(true);
 
-$baseDir = __DIR__;
+$baseDir = "/usr/local/lib/OllamaFileSearch";
 $pythonPath = $baseDir . "/py/.venv/Scripts/python.exe";
 
 
