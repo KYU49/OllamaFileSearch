@@ -27,9 +27,9 @@ filePath="/usr/local/lib/"
 mkdir html/OllamaFileSearch/.config
 touch html/OllamaFileSearch/.config/labelList.yaml
 
-cp html/OllamaFileSearch /var/www/http/
+cp html/OllamaFileSearch /var/www/http/ -r
 
-cp OllamaFileSearch ${filePath}
+cp OllamaFileSearch ${filePath} -r
 sudo chmod 0755 ${filePath}OllamaFileSearch/fileWatcherHandler.sh
 
 sudo apt install inotify-tools
