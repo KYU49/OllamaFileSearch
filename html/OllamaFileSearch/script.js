@@ -1,6 +1,6 @@
 {
 	
-PHP_ADDRESS = "../sseEndpoint.php"
+PHP_ADDRESS = "./sseEndpoint.php"
 class SearchModel {
 	constructor() {
 		this.defaultTitle = "Mumblore";
@@ -15,7 +15,7 @@ class SearchModel {
 	// サーバーからラベルリストを取得
 	async loadLabels() {
 		try {
-			const response = await fetch("../.config/labelList.yaml"); // YAMLファイルを取得
+			const response = await fetch(".config/labelList.yaml"); // YAMLファイルを取得
 			const text = await response.text(); // ファイルの内容をテキストとして取得
 
 			// YAMLをパースするために簡単に手動で処理
