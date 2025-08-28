@@ -32,7 +32,7 @@ cp html/OllamaFileSearch/. /var/www/html/OllamaFileSearch -r
 
 cp OllamaFileSearch ${filePath} -r
 sudo chmod 0755 ${filePath}OllamaFileSearch/fileWatcherHandler.sh
-sudo chmod 0755 ${filePath}OllamaFileSearch/py/lib/python
+sudo chmod 0755 ${filePath}OllamaFileSearch/py/.venv/bin/python
 
 sudo apt install inotify-tools
 sudo apt install libpq-dev
