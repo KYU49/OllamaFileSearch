@@ -23,7 +23,13 @@ Environment="HTTPS_PROXY=http://your-proxy-address:port"
 * Run the following command on terminal in the OllamaFileSearch directory (`cd OllamaFileSearch`).
 ```bash
 $filePath="/usr/local/lib/"
-sudo cp OllamaFileSearch ${filePath}
+
+mkdir html/OllamaFileSearch/.config
+touch html/OllamaFileSearch/.config/labelList.yaml
+
+cp html/OllamaFileSearch /var/www/http/
+
+cp OllamaFileSearch ${filePath}
 sudo chmod 0755 ${filePath}OllamaFileSearch/fileWatcherHandler.sh
 
 sudo apt install inotify-tools
@@ -32,9 +38,6 @@ wget -qO- https://astral.sh/uv/install.sh | sh
 
 cd ${filePath}OllamaFileSearch/py
 uv sync
-
-mkdir .config
-touch .config/secret.yaml
 
 sudo systemctl deamon-reload
 sudo systemctl enable ${filePath}OllamaFileSearch/fileWatcher.service
