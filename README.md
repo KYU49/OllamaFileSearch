@@ -27,7 +27,8 @@ filePath="/usr/local/lib/"
 mkdir html/OllamaFileSearch/.config
 touch html/OllamaFileSearch/.config/labelList.yaml
 
-cp html/OllamaFileSearch /var/www/html/ -r
+mkdir /var/www/html/OllamaFileSearch
+cp html/OllamaFileSearch/. /var/www/html/OllamaFileSearch -r 
 
 cp OllamaFileSearch ${filePath} -r
 sudo chmod 0755 ${filePath}OllamaFileSearch/fileWatcherHandler.sh
