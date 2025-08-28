@@ -22,7 +22,7 @@ Environment="HTTPS_PROXY=http://your-proxy-address:port"
 
 * Run the following command on terminal in the OllamaFileSearch directory (`cd OllamaFileSearch`).
 ```bash
-$filePath="/usr/local/lib/"
+filePath="/usr/local/lib/"
 
 mkdir html/OllamaFileSearch/.config
 touch html/OllamaFileSearch/.config/labelList.yaml
