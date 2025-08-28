@@ -39,7 +39,7 @@ wget -qO- https://astral.sh/uv/install.sh | sh
 cd ${filePath}OllamaFileSearch/py
 uv sync
 
-sudo systemctl deamon-reload
+sudo systemctl daemon-reload
 sudo systemctl enable ${filePath}OllamaFileSearch/fileWatcher.service
 sudo systemctl start ${filePath}OllamaFileSearch/fileWatcher.service
 
