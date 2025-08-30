@@ -43,6 +43,7 @@ filePath="/usr/local/lib/"
 
 git clone https://github.com/KYU49/OllamaFileSearch
 cd OllamaFileSearch
+mkdir OllamaFileSearch/py/chromadb
 mkdir ./html/OllamaFileSearch/files
 mkdir ./html/OllamaFileSearch/.config
 touch ./html/OllamaFileSearch/.config/labelList.yaml
@@ -50,6 +51,7 @@ touch ./html/OllamaFileSearch/.config/labelList.yaml
 sudo cp -r ./html/OllamaFileSearch /var/www/html/
 sudo cp -r OllamaFileSearch ${filePath}
 
+sudo chmod -R 775 ${filePath}OllamaFileSearch/py/chromadb
 sudo chown -R root:www-data ${filePath}OllamaFileSearch/py
 sudo chmod -R 750 ${filePath}OllamaFileSearch/py
 sudo chmod +x ${filePath}OllamaFileSearch/py/*.py

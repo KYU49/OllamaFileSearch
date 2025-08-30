@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# fileWatcher.serviceの方で`WorkingDirectory=/usr/local/lib/OllamaFileSearch/py`として設定しているため、uvなどはそのまま動かせる。
+# fileWatcher.serviceの方で`WorkingDirectory=/usr/local/lib/OllamaFileSearch/py`として設定している。
 WATCH_DIR="/var/www/html/OllamaFileSearch/files"
 # 無視したい一時ファイルパターン
 IGNORE_REGEX='(\.sw[pox]$|~$|\.tmp$|\.goutputstream.*$|^\.#)'
