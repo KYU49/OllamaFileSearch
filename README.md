@@ -40,7 +40,6 @@ curl -LsSf https://astral.sh/uv/install.sh | sudo env UV_INSTALL_DIR="/opt/uv" s
 ## This program
 * Navigate to any desired directory, then execute the following command. 
 ```bash
-filePath="/usr/local/lib/"
 git clone https://github.com/KYU49/OllamaFileSearch
 cd OllamaFileSearch
 mkdir OllamaFileSearch/py/chromadb
@@ -49,12 +48,13 @@ mkdir ./html/OllamaFileSearch/.config
 touch ./html/OllamaFileSearch/.config/labelList.yaml
 
 sudo cp -r ./html/OllamaFileSearch /var/www/html/
-sudo cp -r OllamaFileSearch ${filePath}
 
-cd cd ${filePath}OllamaFileSearch/py
 sudo -u www-data /opt/uv/uv sync
 sudo -u www-data /opt/uv/uv run BertModelInstaller.py
 
+filePath="/usr/local/lib/"
+sudo cp -r OllamaFileSearch ${filePath}
+cd cd ${filePath}OllamaFileSearch/py
 
 sudo chown -R root:www-data ${filePath}OllamaFileSearch/py/chromadb
 sudo chmod -R 775 ${filePath}OllamaFileSearch/py/chromadb
