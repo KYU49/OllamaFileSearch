@@ -25,8 +25,8 @@ class ModernBERTEmbeddings(Embeddings):
 			pass
 
 		# トークナイザーとモデルロード
-		self.tokenizer = AutoTokenizer.from_pretrained(model_name, torch_dtype=torch.float16, cache_dir=CACHE_PATH)
-		self.model = AutoModel.from_pretrained(model_name, torch_dtype=torch.float16, cache_dir=CACHE_PATH)
+		self.tokenizer = AutoTokenizer.from_pretrained(model_name, torch_dtype=torch.float16, cache_dir=CACHE_PATH, local_files_only=True)
+		self.model = AutoModel.from_pretrained(model_name, torch_dtype=torch.float16, cache_dir=CACHE_PATH, local_files_only=True)
 		if self.device >= 0:
 			self.model.to(torch.device("cuda"))
 		self.model.eval()

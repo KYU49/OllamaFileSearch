@@ -56,6 +56,7 @@ sudo chmod +x ${filePath}OllamaFileSearch/py/*.py
 
 cd ${filePath}OllamaFileSearch/py
 uv sync
+uv run BertModelInstaller.py
 
 sudo systemctl daemon-reload
 sudo systemctl enable ${filePath}OllamaFileSearch/fileWatcher.service
