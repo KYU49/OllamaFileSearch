@@ -32,7 +32,7 @@ Environment="HTTPS_PROXY=http://your-proxy-address:port"
 * Install inotify (monitoring filesystem events) and uv (Python package manager), following the below commands.
 ```bash
 sudo apt install inotify-tools
-wget -qO- https://astral.sh/uv/install.sh | sh
+sudo -u www-data wget -qO- https://astral.sh/uv/install.sh |  sudo -u www-data sh
 ```
 * Restart the terminal to enable uv.
 
@@ -48,17 +48,18 @@ mkdir ./html/OllamaFileSearch/files
 mkdir ./html/OllamaFileSearch/.config
 touch ./html/OllamaFileSearch/.config/labelList.yaml
 
+cd OllamaFileSearch/py
+uv sync
+uv run BertModelInstaller.py
+
 sudo cp -r ./html/OllamaFileSearch /var/www/html/
 sudo cp -r OllamaFileSearch ${filePath}
 
+sudo chown -R root:www-data ${filePath}OllamaFileSearch/py/chromadb
 sudo chmod -R 775 ${filePath}OllamaFileSearch/py/chromadb
 sudo chown -R root:www-data ${filePath}OllamaFileSearch/py
 sudo chmod -R 750 ${filePath}OllamaFileSearch/py
 sudo chmod +x ${filePath}OllamaFileSearch/py/*.py
-
-cd ${filePath}OllamaFileSearch/py
-uv sync
-uv run BertModelInstaller.py
 
 sudo systemctl daemon-reload
 sudo systemctl enable ${filePath}OllamaFileSearch/fileWatcher.service
