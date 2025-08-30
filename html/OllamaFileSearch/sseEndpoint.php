@@ -18,7 +18,7 @@ ob_implicit_flush(true);
 $baseDir = "/usr/local/lib/OllamaFileSearch";
 $pythonPath = $baseDir . "/py";
 
-chdir($pythonPath)
+chdir($pythonPath);
 
 // --- 実行 (SSEストリーム開始) ---
 echo "retry: 1000\n\n";	// 再接続までの待機ミリ秒
