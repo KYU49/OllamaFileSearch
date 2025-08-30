@@ -40,6 +40,8 @@ filePath="/usr/local/lib/"
 
 git repo clone https://github.com/KYU49/OllamaFileSearch
 cd OllamaFileSearch
+mkdir ./html/OllamaFileSearch/files
+mkdir ./html/OllamaFileSearch/.config
 touch ./html/OllamaFileSearch/.config/labelList.yaml
 
 sudo cp -r ./html/OllamaFileSearch /var/www/html/
