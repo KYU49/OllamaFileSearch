@@ -41,7 +41,7 @@ wget -qO- https://astral.sh/uv/install.sh | sh
 ```bash
 filePath="/usr/local/lib/"
 
-git repo clone https://github.com/KYU49/OllamaFileSearch
+git clone https://github.com/KYU49/OllamaFileSearch
 cd OllamaFileSearch
 mkdir ./html/OllamaFileSearch/files
 mkdir ./html/OllamaFileSearch/.config
