@@ -40,7 +40,6 @@ sudo -u www-data wget -qO- https://astral.sh/uv/install.sh |  sudo -u www-data s
 * Navigate to any desired directory, then execute the following command. 
 ```bash
 filePath="/usr/local/lib/"
-
 git clone https://github.com/KYU49/OllamaFileSearch
 cd OllamaFileSearch
 mkdir OllamaFileSearch/py/chromadb
@@ -49,8 +48,8 @@ mkdir ./html/OllamaFileSearch/.config
 touch ./html/OllamaFileSearch/.config/labelList.yaml
 
 cd OllamaFileSearch/py
-uv sync
-uv run BertModelInstaller.py
+sudo -u www-data uv sync
+sudo -u www-data uv run BertModelInstaller.py
 
 sudo cp -r ./html/OllamaFileSearch /var/www/html/
 sudo cp -r OllamaFileSearch ${filePath}
