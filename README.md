@@ -42,25 +42,40 @@ curl -LsSf https://astral.sh/uv/install.sh | sudo env UV_INSTALL_DIR="/opt/uv" s
 ```bash
 git clone https://github.com/KYU49/OllamaFileSearch
 cd OllamaFileSearch
-mkdir OllamaFileSearch/py/chromadb
-mkdir ./html/OllamaFileSearch/files
-mkdir ./html/OllamaFileSearch/.config
-touch ./html/OllamaFileSearch/.config/labelList.yaml
+mkdir myapp/OllamaFileSearch/chromadb
+mkdir html/OllamaFileSearch/files
+mkdir html/OllamaFileSearch/.config
+touch html/OllamaFileSearch/.config/labelList.yaml
 
 sudo cp -r ./html/OllamaFileSearch /var/www/html/
-
-sudo -u www-data /opt/uv/uv sync
-sudo -u www-data /opt/uv/uv run BertModelInstaller.py
-
+sudo mkdir /var/www/myapp
+sudo cp -r ./myapp/OllamaFileSearch /var/www/myapp/
 filePath="/usr/local/lib/"
 sudo cp -r OllamaFileSearch ${filePath}
-cd cd ${filePath}OllamaFileSearch/py
 
-sudo chown -R root:www-data ${filePath}OllamaFileSearch/py/chromadb
-sudo chmod -R 775 ${filePath}OllamaFileSearch/py/chromadb
-sudo chown -R root:www-data ${filePath}OllamaFileSearch/py
-sudo chmod -R 750 ${filePath}OllamaFileSearch/py
-sudo chmod +x ${filePath}OllamaFileSearch/py/*.py
+cd /var/www
+sudo mkdir .cache
+sudo chown -R root:www-data .cache
+sudo chmod -R 770 .cache
+sudo mkdir .local
+sudo chown -R root:www-data .local
+sudo chmod -R 770 .local
+
+sudo chmod -R 775 html/OllamaFileSearch/files
+#TODO SharedDirectoryにすること！！！
+
+cd myapp/OllamaFileSearch
+
+sudo chown -R root:www-data ./
+sudo chmod -R 755 ./
+sudo chown -R root:www-data chromadb
+sudo chmod -R 770 chromadb
+
+sudo mkdir .venv
+sudo chown -R root:www-data .venv
+sudo chmod -R 770 .venv
+sudo -u www-data /opt/uv/uv sync
+sudo -u www-data /opt/uv/uv run BertModelInstaller.py
 
 sudo systemctl daemon-reload
 sudo systemctl enable ${filePath}OllamaFileSearch/fileWatcher.service
