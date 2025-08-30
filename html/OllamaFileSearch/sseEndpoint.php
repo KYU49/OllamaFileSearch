@@ -25,7 +25,7 @@ flush();
 // POSTデータ取得
 $prompt = escapeshellarg(rawurldecode($_GET['prompt'] ?? ''));
 // Chroma検索を実行
-$searchResults = shell_exec("uv run searchEndpoint.py " . $prompt);
+$searchResults = shell_exec(".venv/bin/python searchEndpoint.py " . $prompt);
 
 // 検索結果をSSEで送信
 echo "event: search\n";
@@ -33,7 +33,7 @@ echo "data: " . ($searchResults ?: "[]") . "\n\n";
 flush();
 
 // LLM回答を生成
-$cmd = "uv run genAnswerEndpoint.py " . $prompt;
+$cmd = ".venv/bin/python genAnswerEndpoint.py " . $prompt;
 $process = popen($cmd, 'r');
 
 if($process) {
