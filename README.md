@@ -1,4 +1,11 @@
+# Abstract
+
+
+# Attention
+This program is intended for use by a limited number of users, typically from a few to around a dozen, and simultaneous usage is expected to be rare. It is also designed to be run on a personal computer that is used for other purposes, without running the program as a background service. Therefore, if it is to be used on a public server or similar environment, optimization will be necessary.
+
 # Installation
+Install not only this program but also the tools required to run the LLM and Python, and the tools for file monitoring.
 
 ## Ollama
 * Install Ollama according to the [official website](https://ollama.com/download/linux).
@@ -18,26 +25,29 @@ Environment="HTTP_PROXY=http://your-proxy-address:port"
 Environment="HTTPS_PROXY=http://your-proxy-address:port"
 ```
 
-## This program and the other dependencies
-* Navigate to the desired directory, then execute the following command. 
+## Other Dependencies
+* Install inotify (monitoring filesystem events) and uv (Python package manager), following the below commands.
+```bash
+sudo apt install inotify-tools
+wget -qO- https://astral.sh/uv/install.sh | sh
+```
+* Restart the terminal to enable uv.
+
+## This program
+* Navigate to any desired directory, then execute the following command. 
 ```bash
 filePath="/usr/local/lib/"
 
 git repo clone https://github.com/KYU49/OllamaFileSearch
 cd OllamaFileSearch
-mkdir ./html/OllamaFileSearch/.config
 touch ./html/OllamaFileSearch/.config/labelList.yaml
 
-cp -r ./html/OllamaFileSearch /var/www/html/
-cp -r OllamaFileSearch ${filePath}
+sudo cp -r ./html/OllamaFileSearch /var/www/html/
+sudo cp -r OllamaFileSearch ${filePath}
 
 sudo chown -R root:www-data ${filePath}OllamaFileSearch/py
 sudo chmod -R 750 ${filePath}OllamaFileSearch/py
 sudo chmod +x ${filePath}OllamaFileSearch/py/*.py
-
-sudo apt install inotify-tools
-sudo apt install libpq-dev
-wget -qO- https://astral.sh/uv/install.sh | sh
 
 cd ${filePath}OllamaFileSearch/py
 uv sync
