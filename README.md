@@ -19,24 +19,21 @@ Environment="HTTPS_PROXY=http://your-proxy-address:port"
 ```
 
 ## This program and the other dependencies
-
-* Run the following command on terminal in the OllamaFileSearch directory (`cd OllamaFileSearch`).
+* Navigate to the desired directory, then execute the following command. 
 ```bash
 filePath="/usr/local/lib/"
 
-mkdir html/OllamaFileSearch/.config
-touch html/OllamaFileSearch/.config/labelList.yaml
+git repo clone https://github.com/KYU49/OllamaFileSearch
+cd OllamaFileSearch
+mkdir ./html/OllamaFileSearch/.config
+touch ./html/OllamaFileSearch/.config/labelList.yaml
 
-mkdir /var/www/html/OllamaFileSearch
-cp html/OllamaFileSearch/. /var/www/html/OllamaFileSearch -r 
+cp -r ./html/OllamaFileSearch /var/www/html/
+cp -r OllamaFileSearch ${filePath}
 
-cp OllamaFileSearch ${filePath} -r
-sudo chmod 0755 ${filePath}OllamaFileSearch/fileWatcherHandler.sh
-
-sudo chown www-data:www-data ${filePath}OllamaFileSearch/py/.venv/bin/python
-sudo chown www-data:www-data ${filePath}OllamaFileSearch/py/.venv/bin
-sudo chmod 0755 ${filePath}OllamaFileSearch/py/.venv/bin/python
-sudo chmod 0755 ${filePath}OllamaFileSearch/py/.venv/bin
+sudo chown -R root:www-data ${filePath}OllamaFileSearch/py
+sudo chmod -R 750 ${filePath}OllamaFileSearch/py
+sudo chmod +x ${filePath}OllamaFileSearch/py/*.py
 
 sudo apt install inotify-tools
 sudo apt install libpq-dev
