@@ -60,3 +60,5 @@ sudo systemctl start fileWatcher.service
 
 ```
 
+# Setting File Storage Directory
+
