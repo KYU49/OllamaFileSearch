@@ -7,6 +7,9 @@ This program is intended for use by a limited number of users, typically from a 
 # Installation
 Install not only this program but also the tools required to run the LLM and Python, and the tools for file monitoring.
 
+## NVIDIA Driver
+* Install cuda-drivers, [cuda-toolkit](https://developer.nvidia.com/cuda-12-9-0-download-archive?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=24.04&target_type=deb_local)
+
 ## Ollama
 * Install Ollama according to the [official website](https://ollama.com/download/linux).
 ```bash

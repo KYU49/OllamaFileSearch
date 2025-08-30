@@ -26,6 +26,8 @@ dependencies = [
 	"hf-xet>=1.1.7",
 	"langchain-chroma>=0.2.5",
 	"markitdown[docx,outlook,pdf,pptx,xlsx]>=0.1.2",
+	"nvidia-pyindex>=1.0.9",
+	"nvidia-cudnn-cu12>=9.10.2.21",
 ]
 
 [tool.uv.sources]
@@ -40,6 +42,8 @@ explicit = true
 
 [tool.uv.extra-build-dependencies]
 flash-attn = [{ requirement = "torch", match-runtime = true }]
+nvidia-pyindex = ["pip"]
+nvidia-cudnn = ["pip"]
 
 [tool.uv.extra-build-variables]
 flash-attn = { FLASH_ATTENTION_SKIP_CUDA_BUILD = "TRUE" }

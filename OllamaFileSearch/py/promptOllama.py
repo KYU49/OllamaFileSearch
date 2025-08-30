@@ -29,7 +29,8 @@ def summarize4description(text):
 	llm = OllamaLLM(
 		model=DEFAULT_MODEL, 
 		base_url="http://localhost:11434", 
-		temperature=0
+		temperature=0,
+		num_ctx=8192	# 8192で14GBくらいになる
 	)
 	return llm.invoke([
 		("system", SUMMARY_PROMPT),

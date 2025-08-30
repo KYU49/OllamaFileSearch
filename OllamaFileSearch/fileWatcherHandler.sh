@@ -28,5 +28,5 @@ do
 	esac
 
 	# Python スクリプトに変更の種類を渡す
-	uv run fileRegisterEndpoint.py "$CHANGED_FILE" "$ACTION"
+	.venv/bin/python fileRegisterEndpoint.py "$CHANGED_FILE" "$ACTION"
 done

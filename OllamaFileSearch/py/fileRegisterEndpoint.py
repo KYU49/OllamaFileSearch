@@ -56,13 +56,13 @@ def enqueueJob(filePath, action):
 	workerLoop()
 
 def workerLoop():
-    # flock で排他ロックを確保
-    os.makedirs(os.path.dirname(LOCK_FILE), exist_ok=True)
-    with open(LOCK_FILE, "w") as lockfile:
-        try:
-            fcntl.flock(lockfile, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError:
-            return  # 他プロセスが実行中なら終了
+	# flock で排他ロックを確保
+	os.makedirs(os.path.dirname(LOCK_FILE), exist_ok=True)
+	with open(LOCK_FILE, "w") as lockfile:
+		try:
+			fcntl.flock(lockfile, fcntl.LOCK_EX | fcntl.LOCK_NB)
+		except BlockingIOError:
+			return  # 他プロセスが実行中なら終了
 
 		embeddings = ModernBERTEmbeddings()
 		dbJob = Chroma(persist_directory=STORE_PATH, collection_name=JOB_COLLECTION, embedding_function=DummyEmbeddings())
@@ -75,7 +75,7 @@ def workerLoop():
 		while True:
 			jobs = dbJob.get(where = {"status": "pending"})
 			if not jobs["ids"]:
-				break
+				return
 			
 			sortedJobs = sorted(
 				zip(jobs["ids"], jobs["metadatas"]),
@@ -100,7 +100,6 @@ def workerLoop():
 
 				# メタデータを付与(LLMを使って、簡易説明と分類)
 				appendMetadata(doc)
-
 				# Moder BertのToken数が8192 (8192 * 0.96 = 7864.32文字)のため、分割する
 				text_splitter = CharacterTextSplitter(
 					separator="\n\n",
@@ -112,7 +111,6 @@ def workerLoop():
 				# 同じ文書由来のものを検索する際に、1つ目 (or 2つ目移行がヒットするなら最初)だけを表示するため。
 				for i, chunk in enumerate(docs):
 					chunk.metadata["chunk_index"] = i
-
 				# 既にあったら削除しておく(modifiedの場合だけでいいんだけど、処理しちゃったほうが早い)
 				for d in docs:
 					source = d.metadata.get("source")
@@ -122,7 +120,6 @@ def workerLoop():
 							db.delete(ids = id2delete.get("ids"))
 				# 実際のinsert
 				db.add_documents(docs)
-
 				# 成功したらジョブは削除
 				dbJob.delete(ids=processingIds)
 			except Exception as e:
@@ -135,7 +132,6 @@ def workerLoop():
 					)
 					retryCount = 0
 				else:
-					
 					dbJob.add_texts(
 						texts=[""],
 						metadatas=[{**metadata, "status": "pending", "retryCount": retryCount, "error": str(e)}]
