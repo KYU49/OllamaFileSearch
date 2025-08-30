@@ -1,4 +1,6 @@
 <?php
+// エラーログはApache + PHPなら`tail -f /var/log/apache2/error.log`
+
 // SSEヘッダー
 header('Content-Type: text/event-stream');
 header('Cache-Control: no-cache');
@@ -18,8 +20,8 @@ $pythonPath = $baseDir . "/py";
 
 chdir($pythonPath)
 
-# --- 実行 (SSEストリーム開始) ---
-echo "retry: 1000\n\n";	# 再接続までの待機ミリ秒
+// --- 実行 (SSEストリーム開始) ---
+echo "retry: 1000\n\n";	// 再接続までの待機ミリ秒
 flush();
 
 // POSTデータ取得
