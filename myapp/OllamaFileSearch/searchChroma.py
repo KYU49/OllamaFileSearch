@@ -2,13 +2,14 @@ import sys
 import json
 from langchain.vectorstores import Chroma
 from langchain.embeddings import HuggingFaceEmbeddings
+from constants import DB_PATH, BERT_MODEL
 
 prompt = sys.argv[1]
 
 # Chroma DB準備
-persist_directory = "./chroma.db"
+persist_directory = DB_PATH
 embedding_model = HuggingFaceEmbeddings(
-	model_name="sbintuitions/modernbert-ja-310m"
+	model_name=BERT_MODEL
 )
 vectordb = Chroma(persist_directory=persist_directory, embedding_function=embedding_model)
 retriever = vectordb.as_retriever(search_type="similarity", search_kwargs={"k": 20})

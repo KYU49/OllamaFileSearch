@@ -4,18 +4,16 @@ import io
 import json
 from langchain_chroma.vectorstores import Chroma
 from ModernBertEmbeddings import ModernBERTEmbeddings
+from constants import DB_PATH, COLLECTION_NAME
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-
-STORE_PATH = os.path.dirname(os.path.abspath(__file__)) + "/chromadb"
-COLLECTION_NAME = "ollama_file_collection"
 
 prompt = sys.argv[1]
 
 # Chroma DB準備
 embeddings = ModernBERTEmbeddings()
 db = Chroma(
-	persist_directory=STORE_PATH,
+	persist_directory=DB_PATH,
 	embedding_function=embeddings,
 	collection_name=COLLECTION_NAME,
 	collection_metadata={"hnsw:space": "cosine"}

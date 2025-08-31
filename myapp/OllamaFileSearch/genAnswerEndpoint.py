@@ -8,9 +8,7 @@ from langchain_core.runnables import RunnableParallel, RunnablePassthrough
 from langchain_core.prompts import PromptTemplate
 from langchain_chroma.vectorstores import Chroma
 from ModernBertEmbeddings import ModernBERTEmbeddings
-
-STORE_PATH = os.path.dirname(os.path.abspath(__file__)) + "/chromadb"
-COLLECTION_NAME = "ollama_file_collection"
+from constants import DB_PATH, COLLECTION_NAME
 
 SYSTEM_PROMPT = """
 # Order
@@ -33,7 +31,7 @@ userPrompt = sys.argv[1]
 
 embeddings = ModernBERTEmbeddings()
 db = Chroma(
-	persist_directory=STORE_PATH,
+	persist_directory=DB_PATH,
 	embedding_function=embeddings,
 	collection_name=COLLECTION_NAME,
 	collection_metadata={"hnsw:space": "cosine"},

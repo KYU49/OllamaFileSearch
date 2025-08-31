@@ -2,16 +2,14 @@ import sys
 import os
 import time
 import fcntl
-from threading import Thread, Lock
-from datetime import datetime, timedelta
+from datetime import datetime
 from getFileText import getFileText
 from appendMetadata import appendMetadata
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_chroma.vectorstores import Chroma
 from ModernBertEmbeddings import ModernBERTEmbeddings
+from constants import DB_PATH, LOCK_FILE
 
-STORE_PATH = os.path.dirname(os.path.abspath(__file__)) + "/chromadb"
-LOCK_FILE = os.path.dirname(os.path.abspath(__file__)) + "/.cache/fileRegisterQueueLoop.lock"
 JOB_COLLECTION = "file_jobs"
 COLLECTION_NAME = "ollama_file_collection"
 MAX_RETRIES = 3
@@ -32,7 +30,7 @@ class DummyEmbeddings:
 def enqueueJob(filePath, action):
 	# 削除イベントはキューに乗せない
 	if action == "deleted":
-		db = Chroma(persist_directory=STORE_PATH, collection_name=COLLECTION_NAME, embedding_function=DummyEmbeddings())	# こっちは削除用だからdocの入っているdb
+		db = Chroma(persist_directory=DB_PATH, collection_name=COLLECTION_NAME, embedding_function=DummyEmbeddings())	# こっちは削除用だからdocの入っているdb
 		id2delete = db.get(where={"source": filePath})
 		if len(id2delete.get("ids")) > 0:
 			db.delete(ids = id2delete.get("ids"))
@@ -40,7 +38,7 @@ def enqueueJob(filePath, action):
 	
 	priority_map = {"added": 1, "modified": 2}
 	priority = priority_map.get(action, 3)
-	db = Chroma(persist_directory=STORE_PATH, collection_name=JOB_COLLECTION, embedding_function=DummyEmbeddings())
+	db = Chroma(persist_directory=DB_PATH, collection_name=JOB_COLLECTION, embedding_function=DummyEmbeddings())
 	db.add_texts(
 		texts=[""],
 		metadatas = [{
@@ -65,9 +63,9 @@ def workerLoop():
 			return  # 他プロセスが実行中なら終了
 
 		embeddings = ModernBERTEmbeddings()
-		dbJob = Chroma(persist_directory=STORE_PATH, collection_name=JOB_COLLECTION, embedding_function=DummyEmbeddings())
+		dbJob = Chroma(persist_directory=DB_PATH, collection_name=JOB_COLLECTION, embedding_function=DummyEmbeddings())
 		db = Chroma(
-			persist_directory=STORE_PATH,
+			persist_directory=DB_PATH,
 			embedding_function=embeddings,
 			collection_name=COLLECTION_NAME,
 			collection_metadata={"hnsw:space": "cosine"},

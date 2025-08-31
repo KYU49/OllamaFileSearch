@@ -2,9 +2,7 @@ import yaml
 import os
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama.llms import OllamaLLM
-from pydantic import BaseModel, Field
-
-DEFAULT_MODEL = "gpt-oss:20b"
+from constants import OLLAMA_URL, LLM_MODEL, UNCATEGORIZED_LABEL, YAML_PATH
 
 SUMMARY_PROMPT = """
 You are a concise description generator.
@@ -27,8 +25,8 @@ os.environ["NO_PROXY"] = "localhost,127.0.0.1"
 
 def summarize4description(text):
 	llm = OllamaLLM(
-		model=DEFAULT_MODEL, 
-		base_url="http://localhost:11434", 
+		model=LLM_MODEL, 
+		base_url=OLLAMA_URL, 
 		temperature=0,
 		num_ctx=8192	# 8192で14GBくらいになる
 	)
@@ -39,18 +37,18 @@ def summarize4description(text):
 	
 def labeling(text):
 	tagging_prompt = ChatPromptTemplate.from_template(LABELING_PROMPT)
-	llm = OllamaLLM(model=DEFAULT_MODEL, base_url="http://localhost:11434")
+	llm = OllamaLLM(model=LLM_MODEL, base_url=OLLAMA_URL)
 	prompt = tagging_prompt.format(input=text, labels=", ".join(loadLabels()))
 	return llm.invoke(prompt)
 
 def loadLabels():
 	try:
-		with open("/var/www/html/OllamaFileSearch/.config/labelList.yaml", "r", encoding="utf-8") as f:
+		with open(YAML_PATH, "r", encoding="utf-8") as f:
 			labels = yaml.safe_load(f)
 			if isinstance(labels, dict):
 				labels = list(labels.values())
 			return labels
 	except FileNotFoundError:
-		return ["未分類"]
+		return [UNCATEGORIZED_LABEL]
 
 	
