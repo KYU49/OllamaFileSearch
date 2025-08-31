@@ -79,5 +79,12 @@ sudo systemctl start fileWatcher.service
 
 ```
 
+# Uninstall
+```bash
+sudo systemctl disable fileWatcher.service
+sudo rm /var/www/myapp/OllamaFileSearch /var/www/html/OllamaFileSearch /usr/local/lib/OllamaFileSearch -r
+```
+
+
 # Setting File Storage Directory
 
