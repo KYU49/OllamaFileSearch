@@ -1,6 +1,6 @@
 # torchでtritonが/var/www/.tritonを作ろうとしてpermission errorを起こすから、環境変数に設定
 import os
-os.environ["TRITON_CACHE_DIR"] = "/var/www/myapp/.cache/.triton"
+os.environ["TRITON_CACHE_DIR"] = "/var/www/myapp/OllamaFileSearch/.cache/.triton"
 import torch
 import numpy as np
 from transformers import AutoTokenizer, AutoModel, pipeline
