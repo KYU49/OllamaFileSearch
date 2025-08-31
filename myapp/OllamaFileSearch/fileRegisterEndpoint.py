@@ -8,10 +8,9 @@ from appendMetadata import appendMetadata
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_chroma.vectorstores import Chroma
 from ModernBertEmbeddings import ModernBERTEmbeddings
-from constants import DB_PATH, LOCK_FILE
+from constants import DB_PATH, COLLECTION_NAME, LOCK_FILE
 
 JOB_COLLECTION = "file_jobs"
-COLLECTION_NAME = "ollama_file_collection"
 MAX_RETRIES = 3
 SLEEP_INTERVAL = 5
 
@@ -121,6 +120,7 @@ def workerLoop():
 				# 成功したらジョブは削除
 				dbJob.delete(ids=processingIds)
 			except Exception as e:
+				print("Database registration error: ", e)
 				dbJob.delete(ids=processingIds)
 				retryCount += 1
 				if retryCount >= MAX_RETRIES:
