@@ -8,6 +8,9 @@ from constants import DB_PATH, COLLECTION_NAME
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
+# torchでtritonが/var/www/.tritonを作ろうとしてpermission errorを起こすから、環境変数に設定
+os.environ["TRITON_CACHE_DIR"] = "/var/www/myapp/.cache/.triton"
+
 prompt = sys.argv[1]
 
 # Chroma DB準備
