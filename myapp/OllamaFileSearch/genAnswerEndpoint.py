@@ -1,4 +1,7 @@
 import os
+# torchでtritonが/var/www/.tritonを作ろうとしてpermission errorを起こすから、環境変数に設定
+os.environ["TRITON_CACHE_DIR"] = "/var/www/myapp/.cache/.triton"
+
 import sys
 import json
 from langchain_ollama import OllamaLLM
