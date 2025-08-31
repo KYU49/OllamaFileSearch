@@ -52,24 +52,24 @@ sudo cp -r OllamaFileSearch /usr/local/lib/
 cd /var/www
 sudo mkdir .cache
 sudo chown -R root:www-data .cache
-sudo chmod -R 770 .cache
+sudo chmod -R 774 .cache
 sudo mkdir .local
 sudo chown -R root:www-data .local
-sudo chmod -R 770 .local
+sudo chmod -R 774 .local
 sudo chmod -R 775 html/OllamaFileSearch/files
 sudo chown -R root:www-data myapp
-sudo chmod -R 775 myapp
+sudo chmod -R 774 myapp
 #TODO SharedDirectoryにすること！！！
 
 cd myapp/OllamaFileSearch
 sudo chown -R root:www-data ./
 sudo chmod -R 755 ./
-sudo chmod -R 770 .cache
+sudo chmod -R 774 .cache
 sudo chown -R root:www-data chromadb
-sudo chmod -R 770 chromadb
+sudo chmod -R 774 chromadb
 sudo mkdir .venv
 sudo chown -R root:www-data .venv
-sudo chmod -R 770 .venv
+sudo chmod -R 774 .venv
 sudo -u www-data /opt/uv/uv sync
 sudo -u www-data /opt/uv/uv run BertModelInstaller.py
 
