@@ -61,14 +61,13 @@ sudo chmod -R 775 html/OllamaFileSearch/files
 
 cd myapp/OllamaFileSearch
 
+sudo mkdir .venv
+sudo chmod -R 770 .venv
+sudo chmod -R 770 .cache
 sudo chown -R root:www-data ./
 sudo chmod -R 755 ./
 sudo chown -R root:www-data chromadb
 sudo chmod -R 770 chromadb
-
-sudo mkdir .venv
-sudo chmod -R 770 .venv
-sudo chmod -R 770 .cache
 sudo -u www-data /opt/uv/uv sync
 sudo -u www-data /opt/uv/uv run BertModelInstaller.py
 
