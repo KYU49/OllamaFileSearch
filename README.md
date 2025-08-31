@@ -69,8 +69,8 @@ sudo chown -R root:www-data chromadb
 sudo chmod -R 770 chromadb
 
 sudo mkdir .venv
-sudo chown -R root:www-data .venv
 sudo chmod -R 770 .venv
+sudo chmod -R 770 .cache
 sudo -u www-data /opt/uv/uv sync
 sudo -u www-data /opt/uv/uv run BertModelInstaller.py
 
