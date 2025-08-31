@@ -123,6 +123,10 @@ sudo adduser --no-create-home share
 new password: 
 retype new password: 
 Full Name []:For SharedDirectory Access
+
+sudo pdbedit -a share
+new password: 
+retype new password:
 ```
 
 * Restart samba and set automatic start
