@@ -63,7 +63,7 @@ sudo chmod -R 774 myapp
 
 cd myapp/OllamaFileSearch
 sudo chown -R root:www-data ./
-sudo chmod -R 755 ./
+sudo chmod -R 754 ./
 sudo chmod -R 774 .cache
 sudo chown -R root:www-data chromadb
 sudo chmod -R 774 chromadb
