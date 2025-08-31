@@ -28,5 +28,5 @@ do
 	esac
 
 	# Python スクリプトに変更の種類を渡す
-	/opt/uv/uv fileRegisterEndpoint.py "$CHANGED_FILE" "$ACTION"
+	/opt/uv/uv run fileRegisterEndpoint.py "$CHANGED_FILE" "$ACTION"
 done
