@@ -58,6 +58,7 @@ sudo chown -R root:www-data .local
 sudo chmod -R 770 .local
 sudo chmod -R 775 html/OllamaFileSearch/files
 sudo chown -R root:www-data myapp
+sudo chmod -R 775 myapp
 #TODO SharedDirectoryにすること！！！
 
 cd myapp/OllamaFileSearch
