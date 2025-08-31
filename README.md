@@ -42,10 +42,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sudo env UV_INSTALL_DIR="/opt/uv" s
 ```bash
 git clone https://github.com/KYU49/OllamaFileSearch
 cd OllamaFileSearch
-mkdir myapp/OllamaFileSearch/chromadb
-mkdir html/OllamaFileSearch/files
-mkdir html/OllamaFileSearch/.config
-touch html/OllamaFileSearch/.config/labelList.yaml
+echo -e "- マニュアル\n- 未分類" >> html/OllamaFileSearch/.config/labelList.yaml
 
 sudo cp -r ./html/OllamaFileSearch /var/www/html/
 sudo mkdir /var/www/myapp
@@ -71,7 +68,6 @@ sudo chmod -R 755 ./
 sudo chown -R root:www-data chromadb
 sudo chmod -R 770 chromadb
 
-sudo mkdir .venv
 sudo chown -R root:www-data .venv
 sudo chmod -R 770 .venv
 sudo -u www-data /opt/uv/uv sync

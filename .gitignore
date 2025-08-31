@@ -2,7 +2,7 @@
 .DS_Store
 Thumbs.db
 
-# config file for password, etc.
+# User files
 **/.config/*
 **/files/*
 
@@ -30,17 +30,20 @@ build/
 *.log
 
 # Created database
-chromadb/
+**/chromadb/*
 
 # Virtual environments
-.venv
+**/.venv/*
 
 # Ignore .continue directory
 .continue/
 
 # cache of transformers
-.cache/
+**/.cache/*
 
-# 開発用
+# For developing temp dir
 .archives/
 .test/
+
+# Keep dir
+!.gitkeep
