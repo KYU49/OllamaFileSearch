@@ -73,7 +73,8 @@ sudo chmod -R 770 .venv
 sudo -u www-data /opt/uv/uv sync
 sudo -u www-data /opt/uv/uv run BertModelInstaller.py
 
-sudo chmod u+x /usr/local/lib/OllamaFileSearch/fileWatcherHandler.sh
+sudo chown -R root:www-data /usr/local/lib/OllamaFileSearch/fileWatcherHandler.sh
+sudo chmod -R 754 /usr/local/lib/OllamaFileSearch/fileWatcherHandler.sh
 sudo systemctl daemon-reload
 sudo systemctl enable /usr/local/lib/OllamaFileSearch/fileWatcher.service
 sudo systemctl start fileWatcher.service
