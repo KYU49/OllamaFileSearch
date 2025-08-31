@@ -47,8 +47,7 @@ echo -e "- マニュアル\n- 未分類" >> html/OllamaFileSearch/.config/labelL
 sudo cp -r ./html/OllamaFileSearch /var/www/html/
 sudo mkdir /var/www/myapp
 sudo cp -r ./myapp/OllamaFileSearch /var/www/myapp/
-filePath="/usr/local/lib/"
-sudo cp -r OllamaFileSearch ${filePath}
+sudo cp -r OllamaFileSearch /usr/local/lib/
 
 cd /var/www
 sudo mkdir .cache
@@ -74,9 +73,9 @@ sudo chmod -R 770 .cache
 sudo -u www-data /opt/uv/uv sync
 sudo -u www-data /opt/uv/uv run BertModelInstaller.py
 
-sudo chmod u+x ${filePath}OllamaFileSearch/fileWatcherHandler.sh
+sudo chmod u+x /usr/local/lib/OllamaFileSearch/fileWatcherHandler.sh
 sudo systemctl daemon-reload
-sudo systemctl enable ${filePath}OllamaFileSearch/fileWatcher.service
+sudo systemctl enable /usr/local/lib/OllamaFileSearch/fileWatcher.service
 sudo systemctl start fileWatcher.service
 
 ```
