@@ -33,7 +33,7 @@ build/
 **/chromadb/*
 
 # Virtual environments
-**/.venv/*
+.venv/
 
 # Ignore .continue directory
 .continue/
