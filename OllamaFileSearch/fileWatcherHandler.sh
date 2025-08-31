@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# fileWatcher.serviceの方で`WorkingDirectory=/usr/local/lib/OllamaFileSearch/py`として設定している。
+# fileWatcher.serviceの方で`WorkingDirectory=/var/www/myapp/OllamaFileSearch`として設定している。
 WATCH_DIR="/var/www/html/OllamaFileSearch/files"
 # 無視したい一時ファイルパターン
 IGNORE_REGEX='(\.sw[pox]$|~$|\.tmp$|\.goutputstream.*$|^\.#)'
@@ -28,5 +28,5 @@ do
 	esac
 
 	# Python スクリプトに変更の種類を渡す
-	.venv/bin/python fileRegisterEndpoint.py "$CHANGED_FILE" "$ACTION"
+	/opt/uv/uv fileRegisterEndpoint.py "$CHANGED_FILE" "$ACTION"
 done
