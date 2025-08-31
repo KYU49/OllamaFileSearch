@@ -42,7 +42,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sudo env UV_INSTALL_DIR="/opt/uv" s
 ```bash
 git clone https://github.com/KYU49/OllamaFileSearch
 cd OllamaFileSearch
-echo -e "- マニュアル\n- 未分類" >> html/OllamaFileSearch/.config/labelList.yaml
+echo -e "- 論文・特許\n- マニュアル\n- 未分類" >> html/OllamaFileSearch/.config/labelList.yaml
 
 sudo cp -r ./html/OllamaFileSearch /var/www/html/
 sudo mkdir /var/www/myapp

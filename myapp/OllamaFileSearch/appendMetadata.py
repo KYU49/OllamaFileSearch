@@ -1,4 +1,5 @@
 import os
+import re
 from promptOllama import summarize4description, labeling
 from datetime import datetime
 
@@ -15,6 +16,7 @@ def appendMetadata(doc):
 		"description": description,
 		"label": label,
 		"last_modified": dt.isoformat(),	# 2025-08-21T12:34:56.123456のようになるはず。
+		"source": re.sub(r"^.*?(OllamaFileSearch/files)", r"files", doc.metadata["source"])
 	})
 	return doc
 
