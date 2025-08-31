@@ -16,7 +16,7 @@ while (ob_get_level() > 0) {
 ob_implicit_flush(true);
 
 $baseDir = "/usr/local/lib/OllamaFileSearch";
-$pythonPath = $baseDir . "/py";
+$pythonPath = "/var/www/myapp/OllamaFileSearch";
 
 chdir($pythonPath);
 
@@ -27,7 +27,7 @@ flush();
 // POSTデータ取得
 $prompt = escapeshellarg(rawurldecode($_GET['prompt'] ?? ''));
 // Chroma検索を実行
-$searchResults = shell_exec(".venv/bin/python searchEndpoint.py " . $prompt);
+$searchResults = shell_exec("/opt/uv/uv run searchEndpoint.py " . $prompt);
 
 // 検索結果をSSEで送信
 echo "event: search\n";
@@ -35,7 +35,7 @@ echo "data: " . ($searchResults ?: "[]") . "\n\n";
 flush();
 
 // LLM回答を生成
-$cmd = ".venv/bin/python genAnswerEndpoint.py " . $prompt;
+$cmd = "/opt/uv/uv run genAnswerEndpoint.py " . $prompt;
 $process = popen($cmd, 'r');
 
 if($process) {
