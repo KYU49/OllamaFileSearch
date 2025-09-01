@@ -56,7 +56,7 @@ sudo chmod -R 775 .cache
 sudo mkdir .local
 sudo chown -R root:www-data .local
 sudo chmod -R 775 .local
-sudo chmod -R 775 html/OllamaFileSearch/files
+sudo chmod -R 777 html/OllamaFileSearch/files
 sudo chown -R root:www-data myapp
 sudo chmod -R 775 myapp
 
@@ -103,8 +103,6 @@ writable = yes
 read only = no
 force create mode = 0666
 force directory mode = 0775
-veto files = /*/
-delete veto files = yes
 ```
 * Comment out printers and print section
 ```smb.conf
