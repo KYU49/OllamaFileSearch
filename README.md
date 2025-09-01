@@ -92,7 +92,7 @@ sudo nano smb.conf
 
 * Add the below code at last of the file
 ```smb.conf
-[SharedDirectory]
+[OllamaFileSearch]
 comment = SharedDirectoryForAnotherPC
 path = /var/www/html/OllamaFileSearch/files
 available = yes
@@ -134,7 +134,7 @@ sudo systemctl restart smbd nmbd
 sudo systemctl enable smbd nmbd
 ```
 * To access **file store files** from Windows, use **Map Network Drive**.
-    - Folder: `\\<IP_ADDRESS>\files`
+    - Folder: `\\<IP_ADDRESS>\OllamaFileSearch`
     - Check **Connect using different credentials**
     - User Name: `<IP_ADDRESS>\share`
     - Password: YOUR_PASSWORD
