@@ -50,9 +50,10 @@ llm = OllamaLLM(
 prompt = PromptTemplate.from_template(SYSTEM_PROMPT)
 
 def formatDocs(docs):
-	return "\n\n".join(
-		doc.page_content for doc in docs
-	)
+    return "\n\n".join(
+        getattr(doc, "page_content", getattr(doc, "documents", "")) 
+        for doc in docs
+    )
 
 chainRagFromDocs = (
 	RunnablePassthrough.assign(content=(lambda x: formatDocs(x["context"])))
