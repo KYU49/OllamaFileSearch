@@ -1,28 +1,22 @@
 import sys
 import os
 import time
-import fcntl
 from datetime import datetime
 from getFileText import getFileText
 from appendMetadata import appendMetadata
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_chroma.vectorstores import Chroma
 from ModernBertEmbeddings import ModernBERTEmbeddings
+from DummyEmbeddings import DummyEmbeddings
 from constants import DB_PATH, COLLECTION_NAME, LOCK_FILE
+try: 
+	import fcntl
+except ImportError:
+	import fctrl_win as fcntl
 
 JOB_COLLECTION = "file_jobs"
 MAX_RETRIES = 3
 SLEEP_INTERVAL = 5
-
-class DummyEmbeddings:
-	def __init__(self, dim: int = 1):
-		self.dim = dim
-	def embed_documents(self, texts):
-		# texts の数だけ dim 長のゼロベクトルリストを返す
-		return [[0.0] * self.dim for _ in texts]
-	def embed_query(self, text):
-		return [0.0] * self.dim
-
 
 # sys.argv[1]: ファイルパス; [2]: 変更内容(added/modified/deleted/unknown)
 

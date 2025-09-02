@@ -44,6 +44,7 @@ build/
 # For developing temp dir
 .archives/
 .test/
+test.py
 
 # Keep dir
 !.gitkeep
