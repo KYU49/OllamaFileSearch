@@ -23,8 +23,9 @@ SLEEP_INTERVAL = 5
 def enqueueJob(filePath, action):
 	# 削除イベントはキューに乗せない
 	if action == "deleted":
+		source = re.sub(r"^.*?OllamaFileSearch/files", r"files", filePath)
 		db = Chroma(persist_directory=DB_PATH, collection_name=COLLECTION_NAME, embedding_function=DummyEmbeddings())	# こっちは削除用だからdocの入っているdb
-		id2delete = db.get(where={"source": filePath})
+		id2delete = db.get(where={"source": source})
 		if len(id2delete.get("ids")) > 0:
 			db.delete(ids = id2delete.get("ids"))
 		return
