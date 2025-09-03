@@ -18,12 +18,8 @@ db = Chroma(
 	collection_metadata={"hnsw:space": "cosine"}
 )
 
+# 検索
 docsAndScores = db.similarity_search_with_score(prompt, k=3)
 results = [{"documents": getattr(doc, "page_content", getattr(doc, "documents", "")), "metadata": {**doc.metadata, "similality": 1 - similality}} for doc, similality in docsAndScores]
 
-# 検索
-#retriever = db.as_retriever(search_type="similarity", search_kwargs={"k": 20})
-#docs = retriever.invoke(prompt)
-# JSON化してPHPに返す
-#results = [{"page_content": getattr(doc, "page_content", getattr(doc, "documents", "")), "metadata": doc.metadata} for doc in docs]
 print(json.dumps(results, ensure_ascii=False))
