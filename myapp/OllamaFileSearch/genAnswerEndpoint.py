@@ -7,6 +7,7 @@ from langchain.prompts import PromptTemplate
 from langchain_chroma.vectorstores import Chroma
 from ModernBertEmbeddings import ModernBERTEmbeddings
 from constants import DB_PATH, COLLECTION_NAME
+from PageContentRetrieverWrapper import PageContentRetrieverWrapper
 
 
 SYSTEM_PROMPT = """
@@ -40,7 +41,7 @@ db = Chroma(
 	collection_metadata={"hnsw:space": "cosine"},
 )
 
-retriever = db.as_retriever(search_type="similarity", search_kwargs={"k": 3})
+retriever = PageContentRetrieverWrapper(retriever=db.as_retriever(search_type="similarity", search_kwargs={"k": 3}))
 
 llm = OllamaLLM(
 	model="gpt-oss:20b", 
@@ -67,11 +68,11 @@ promptTemplate =PromptTemplate(
 
 # --- RAG用Chain構築 ---
 chainWithRag = RetrievalQA.from_chain_type(
-    llm=llm,
-    retriever=retriever,
-    chain_type="stuff",        # "stuff" (そのまま渡す), "map_reduce" (文書ごとに部分的な回答を生成してまとめる), "refine" (ざっくりした回答を作った後、文書を順番に見て洗練する) など用途に応じて選択。
-    return_source_documents=False,
-    chain_type_kwargs={"prompt": promptTemplate},
+	llm=llm,
+	retriever=retriever,
+	chain_type="stuff",		# "stuff" (そのまま渡す), "map_reduce" (文書ごとに部分的な回答を生成してまとめる), "refine" (ざっくりした回答を作った後、文書を順番に見て洗練する) など用途に応じて選択。
+	return_source_documents=False,
+	chain_type_kwargs={"prompt": promptTemplate},
 )
 
 for chunk in chainWithRag.stream(userPrompt, config={"callbacks": [SSECallbackHandler()]}):
