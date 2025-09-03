@@ -1,17 +1,15 @@
 import sys
 import json
 from langchain_ollama import OllamaLLM
-from langchain.chains import create_retrieval_chain
+from langchain.chains import RetrievalQA
 from langchain.callbacks.base import BaseCallbackHandler
-from langchain_core.runnables import RunnableParallel, RunnablePassthrough
-from langchain_core.prompts import PromptTemplate
+from langchain.prompts import PromptTemplate
 from langchain_chroma.vectorstores import Chroma
 from ModernBertEmbeddings import ModernBERTEmbeddings
 from constants import DB_PATH, COLLECTION_NAME
 
 
 SYSTEM_PROMPT = """
-# Order
 First, assess whether the user's question is addressed or partially addressed by the search results.
 
 If the search results contain information that is likely to help answer or clarify the question, even partially, treat it as relevant. 
@@ -40,10 +38,9 @@ db = Chroma(
 	embedding_function=embeddings,
 	collection_name=COLLECTION_NAME,
 	collection_metadata={"hnsw:space": "cosine"},
-	
 )
-retriever = db.as_retriever(search_type="similarity", search_kwargs={"k": 3})
 
+retriever = db.as_retriever(search_type="similarity", search_kwargs={"k": 3})
 
 llm = OllamaLLM(
 	model="gpt-oss:20b", 
@@ -52,24 +49,6 @@ llm = OllamaLLM(
 	temperature=0,
 	num_ctx=8192	# 8192で14GBくらいになる
 )
-
-prompt = PromptTemplate.from_template(SYSTEM_PROMPT)
-
-def formatDocs(docs):
-    return "\n\n".join(
-        getattr(doc, "page_content", getattr(doc, "documents", "")) 
-        for doc in docs
-    )
-
-chainRagFromDocs = (
-	RunnablePassthrough.assign(content=(lambda x: formatDocs(x["context"])))
-	| prompt
-	| llm
-)
-chainWithRag = RunnableParallel(
-	{"context": retriever, "question": RunnablePassthrough()}
-).assign(answer = chainRagFromDocs)
-
 
 # --- SSE用コールバック ---
 class SSECallbackHandler(BaseCallbackHandler):
@@ -80,6 +59,20 @@ class SSECallbackHandler(BaseCallbackHandler):
 	def on_llm_end(self, response, **kwargs):
 		# 終了を通知
 		print("[DONE]", flush=True)
+
+promptTemplate =PromptTemplate(
+	template=SYSTEM_PROMPT,
+	input_variables=["context", "question"]
+)
+
+# --- RAG用Chain構築 ---
+chainWithRag = RetrievalQA.from_chain_type(
+    llm=llm,
+    retriever=retriever,
+    chain_type="stuff",        # "stuff" (そのまま渡す), "map_reduce" (文書ごとに部分的な回答を生成してまとめる), "refine" (ざっくりした回答を作った後、文書を順番に見て洗練する) など用途に応じて選択。
+    return_source_documents=False,
+    chain_type_kwargs={"prompt": promptTemplate},
+)
 
 for chunk in chainWithRag.stream(userPrompt, config={"callbacks": [SSECallbackHandler()]}):
 	pass	# SSEは逐次コールバックで送信されるのでここでは何もしない
