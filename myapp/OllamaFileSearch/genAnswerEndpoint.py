@@ -9,14 +9,19 @@ from langchain_chroma.vectorstores import Chroma
 from ModernBertEmbeddings import ModernBERTEmbeddings
 from constants import DB_PATH, COLLECTION_NAME
 
+
 SYSTEM_PROMPT = """
 # Order
-First, determine whether the user's question is relevant to the search results.
+First, assess whether the user's question is addressed or partially addressed by the search results.
 
-If the relevance is low or there is no meaningful connection, respond "No relevant files were found." (translated into the same language with user's question).
+If the search results contain information that is likely to help answer or clarify the question, even partially, treat it as relevant. 
+Do not require an exact match of wording—conceptual relevance is sufficient.
 
-Only if the question is relevant, generate an answer in HTML style (not Markdown), based only on the provided search results.
-Do not use any external knowledge outside of the search results.
+Only if there is truly no meaningful or related information at all, respond:
+"No relevant files were found." (translated into the same language with user's question).
+
+If the information is relevant, generate a clear and concise answer in HTML format (not Markdown), using only the search results as your source. 
+You may summarize, reorganize, or restate the relevant points to directly 
 
 # Search Results
 {context}
@@ -24,6 +29,7 @@ Do not use any external knowledge outside of the search results.
 # User's Question
 {question}
 """
+
 
 # --- 引数取得 ---
 userPrompt = sys.argv[1]
