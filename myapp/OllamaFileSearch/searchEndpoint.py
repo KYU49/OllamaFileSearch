@@ -19,7 +19,7 @@ db = Chroma(
 )
 
 # 検索
-docsAndScores = db.similarity_search_with_score(prompt, k=3)
+docsAndScores = db.similarity_search_with_score(prompt, k=20)
 results = [{"documents": getattr(doc, "page_content", getattr(doc, "documents", "")), "metadata": {**doc.metadata, "similality": 1 - similality}} for doc, similality in docsAndScores]
 
 print(json.dumps(results, ensure_ascii=False))
