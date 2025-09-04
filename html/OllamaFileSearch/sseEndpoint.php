@@ -25,7 +25,11 @@ echo "retry: 1000\n\n";	// 再接続までの待機ミリ秒
 flush();
 
 // POSTデータ取得
-$prompt = escapeshellarg(rawurldecode($_GET['prompt'] ?? ''));
+function escapeShellArgUtf8($arg) {
+    // シングルクォートで囲み、内部のシングルクォートをエスケープ
+    return "'" . str_replace("'", "'\\''", $arg) . "'";
+}
+$prompt = escapeShellArgUtf8(rawurldecode($_GET['prompt'] ?? ''));
 // Chroma検索を実行
 $searchResults = shell_exec("/opt/uv/uv run searchEndpoint.py " . $prompt);
 
