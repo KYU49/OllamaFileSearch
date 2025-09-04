@@ -45,8 +45,24 @@ def enqueueJob(filePath, action):
 			"timestamp": datetime.now().isoformat()
 		}]
 	)
-
 	workerLoop()
+
+def reregisterAll(path = "/var/www/html/OllamaFileSearch/files"):
+	db = Chroma(persist_directory=DB_PATH, collection_name=JOB_COLLECTION, embedding_function=DummyEmbeddings())
+	for file in os.listdir(path):
+		db.add_texts(
+			texts=[""],
+			metadatas = [{
+				"filePath": file,
+				"action": "modified",
+				"status": "pending",
+				"retryCount": 0,
+				"priority": 2,
+				"timestamp": datetime.now().isoformat()
+			}]
+		)
+	workerLoop()
+
 
 def workerLoop():
 	# flock で排他ロックを確保
@@ -134,6 +150,8 @@ def workerLoop():
 
 if __name__ == "__main__":
 	if len(sys.argv) < 3:
+		if len(sys.argv) == 2 and sys.argv[1] == "all":
+			reregisterAll()
 		print("Usage: enqueue_job.py <file_path> <action>")
 		sys.exit(1)
 
