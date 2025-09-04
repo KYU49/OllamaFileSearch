@@ -139,10 +139,14 @@ main {
 	animation: spinner 1.5s linear infinite;
 }
 
+.search_result_label {
+	padding: 5px;
+}
 .search_result_label::before {
 	content: "#";
+	font-weight: bold;
 }
-.search_result_similality::before {
+.search_result_similarity::before {
 	content: "CosSim: ";
 }
 

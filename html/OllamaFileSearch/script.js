@@ -105,13 +105,13 @@ class SearchView {
 				const description = document.createElement("div");
 				description.innerText = r.metadata.description;
 				const etcContainer = document.createElement("div")
-				const similality = document.createElement("span");
-				similality.innerText = r.metadata.similalityl
-				similality.classList.add("search_result_similarity");
+				const similarity = document.createElement("span");
+				similarity.innerText = r.metadata.similalityl
+				similarity.classList.add("search_result_similarity");
 				const label = document.createElement("span");
 				label.innerText = r.metadata.label;
 				label.classList.add("search_result_label");
-				etcContainer.appendChild(similality);
+				etcContainer.appendChild(similarity);
 				etcContainer.appendChild(label)
 
 				item.appendChild(source);
