@@ -104,8 +104,19 @@ class SearchView {
 				source.target = "_blank";
 				const description = document.createElement("div");
 				description.innerText = r.metadata.description;
+				const etcContainer = document.createElement("div")
+				const similality = document.createElement("span");
+				similality.innerText = r.metadata.similalityl
+				similality.classList.add("search_result_similarity");
+				const label = document.createElement("span");
+				label.innerText = r.metadata.label;
+				label.classList.add("search_result_label");
+				etcContainer.appendChild(similality);
+				etcContainer.appendChild(label)
+
 				item.appendChild(source);
 				item.appendChild(description);
+				item.appendChild(etcContainer);
 				this.searchResultsDiv.appendChild(item);
 				alreadyAdded.push(r.metadata.source);
 			}

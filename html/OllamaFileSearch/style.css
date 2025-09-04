@@ -138,6 +138,14 @@ main {
 	border-top-color: #ab1c23;
 	animation: spinner 1.5s linear infinite;
 }
+
+.search_result_label::before {
+	content: "#";
+}
+.search_result_similality::before {
+	content: "CosSim: ";
+}
+
 @keyframes spinner {
 	to {
 		transform: rotate(360deg);
