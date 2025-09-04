@@ -22,11 +22,11 @@ Only if there is truly no meaningful or related information at all, respond:
 If the information is relevant, generate a clear and concise answer in HTML format (not Markdown), using only the search results as your source. 
 You may summarize, reorganize, or restate the relevant points to directly 
 
-# Search Results
-{context}
-
 # User's Question
 {question}
+
+# Search Results
+{context}
 """
 
 

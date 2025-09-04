@@ -151,5 +151,18 @@ sudo rm /var/www/myapp/OllamaFileSearch /var/www/html/OllamaFileSearch /usr/loca
 	- /var/www/.local
 	- /var/www/myapp
 
+# Additional Notes
 
-
+In corporate or other proxy environments, running an Ollama-related script from the terminal using
+```bash
+sudo -u www-data /opt/uv/uv run hoge.py
+```
+may sometimes result in the error
+```
+httpx.ReadError: [Errno 104] Connection reset by peer
+```
+In such cases, you can run the script without going through the proxy when connecting to Ollama on `127.0.0.1` or `localhost` by using:
+```bash
+sudo -u www-data -H bash -c 'export no_proxy=127.0.0.1,localhost; export NO_PROXY=127.0.0.1,localhost; /opt/uv/uv run hoge.py'
+```
+This allows the script to execute successfully.
