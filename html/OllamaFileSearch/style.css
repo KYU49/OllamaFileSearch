@@ -145,7 +145,7 @@ main {
 .search_result_label::before {
 	content: "#";
 	font-weight: bold;
-	color: darkgray;
+	color: lightcoral;
 }
 .search_result_similarity::before {
 	content: "CosSim: ";
