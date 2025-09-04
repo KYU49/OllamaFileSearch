@@ -106,7 +106,7 @@ class SearchView {
 				description.innerText = r.metadata.description;
 				const etcContainer = document.createElement("div")
 				const similarity = document.createElement("span");
-				similarity.innerText = r.metadata.similalityl
+				similarity.innerText = r.metadata.similarity;
 				similarity.classList.add("search_result_similarity");
 				const label = document.createElement("span");
 				label.innerText = r.metadata.label;
