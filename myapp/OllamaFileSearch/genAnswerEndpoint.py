@@ -73,7 +73,7 @@ def queryOllama(prompt: str, stream: bool = True, callbacks: List = None):
 
 def runRag(userPrompt: str):
 	# 1. 類似文書取得
-	docs = retrieveSimilarDocs(user_prompt, k=K)
+	docs = retrieveSimilarDocs(userPrompt, k=K)
 	context = "\n\n".join(docs)
 	
 	# 2. プロンプト作成
