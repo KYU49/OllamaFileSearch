@@ -4,63 +4,43 @@ import re
 import time
 from datetime import datetime
 from getFileText import getFileText
-from appendMetadata import appendMetadata
-from langchain.text_splitter import CharacterTextSplitter
-from langchain_chroma.vectorstores import Chroma
-from ModernBertEmbeddings import ModernBERTEmbeddings
-from DummyEmbeddings import DummyEmbeddings
-from constants import DB_PATH, COLLECTION_NAME, LOCK_FILE
+from createMetadata import createMetadata
+from constants import COLLECTION_TABLE_NAME, QUEUE_TABLE_NAME, LOCK_FILE
+from getDatabase import getDatabase
+from vectorize import vectorize
+from promptOllama import summarize4description, labeling
+
 try: 
 	import fcntl
 except ImportError:
 	import fctrl_win as fcntl
 
-JOB_COLLECTION = "file_jobs"
 MAX_RETRIES = 3
 SLEEP_INTERVAL = 5
 
 # sys.argv[1]: ファイルパス; [2]: 変更内容(added/modified/deleted/unknown)
 
+#TODO https://voluntas.ghost.io/duckdb-japanese-full-text-search/ を参考に、DuckDBを用いた、全文検索に変更。hybrid検索はこっちも参照。https://voluntas.ghost.io/duckdb-hybrid-search/
 def enqueueJob(filePath, action):
+	conn = getDatabase()
 	# 削除イベントはキューに乗せない
 	if action == "deleted":
 		source = re.sub(r"^.*?OllamaFileSearch/files", r"files", filePath)
-		db = Chroma(persist_directory=DB_PATH, collection_name=COLLECTION_NAME, embedding_function=DummyEmbeddings())	# こっちは削除用だからdocの入っているdb
-		id2delete = db.get(where={"source": source})
-		if len(id2delete.get("ids")) > 0:
-			db.delete(ids = id2delete.get("ids"))
+		conn.execute("DETETE FROM ? WHERE source = ?", [COLLECTION_TABLE_NAME, source])
 		return
 	
 	priority_map = {"added": 1, "modified": 2}
 	priority = priority_map.get(action, 3)
-	db = Chroma(persist_directory=DB_PATH, collection_name=JOB_COLLECTION, embedding_function=DummyEmbeddings())
-	db.add_texts(
-		texts=[""],
-		metadatas = [{
-			"filePath": filePath,
-			"action": action,
-			"status": "pending",
-			"retryCount": 0,
-			"priority": priority,
-			"timestamp": datetime.now().isoformat()
-		}]
-	)
+
+	conn.execute("INSERT INTO ? (file_path, action, status, retry_count, timestamp, error) VALUES (?, ?, 'pending', 0, ?, '')", [QUEUE_TABLE_NAME, filePath, action, datetime.now()])
+	conn.close()
 	workerLoop()
 
 def reregisterAll(path = "/var/www/html/OllamaFileSearch/files"):
-	db = Chroma(persist_directory=DB_PATH, collection_name=JOB_COLLECTION, embedding_function=DummyEmbeddings())
-	for file in os.listdir(path):
-		db.add_texts(
-			texts=[""],
-			metadatas = [{
-				"filePath": file,
-				"action": "modified",
-				"status": "pending",
-				"retryCount": 0,
-				"priority": 2,
-				"timestamp": datetime.now().isoformat()
-			}]
-		)
+	conn = getDatabase()
+	for filePath in os.listdir(path):
+		conn.execute("INSERT INTO ? (file_path, action, status, retry_count, timestamp, error) VALUES (?, 'modified', 'pending', 0, ?, '')", [QUEUE_TABLE_NAME, filePath, datetime.now()])
+	conn.close()
 	workerLoop()
 
 
@@ -72,80 +52,64 @@ def workerLoop():
 			fcntl.flock(lockfile, fcntl.LOCK_EX | fcntl.LOCK_NB)
 		except BlockingIOError:
 			return  # 他プロセスが実行中なら終了
+		
+		conn = getDatabase()
 
-		embeddings = ModernBERTEmbeddings()
-		dbJob = Chroma(persist_directory=DB_PATH, collection_name=JOB_COLLECTION, embedding_function=DummyEmbeddings())
-		db = Chroma(
-			persist_directory=DB_PATH,
-			embedding_function=embeddings,
-			collection_name=COLLECTION_NAME,
-			collection_metadata={"hnsw:space": "cosine"},
-		)
 		while True:
-			jobs = dbJob.get(where = {"status": "pending"})
-			if not jobs["ids"]:
+			jobs = conn.execute("SELECT id, file_path, retry_count, timestamp FROM ? WHERE status = 'pending' ORDER BY timestamp ASC LIMIT 1", [QUEUE_TABLE_NAME]).fetchall()
+			if not jobs:
 				return
-			
-			sortedJobs = sorted(
-				zip(jobs["ids"], jobs["metadatas"]),
-				key = lambda x: (x[1].get("priority", 3), x[1].get("timestamp", ""))
-			)
-			jobId, metadata = sortedJobs[0]
-			filePath = metadata["filePath"]
-			# action = metadata["action"]	# delete以外はpriorityにしか使わないから、多分不要
-			retryCount = metadata.get("retryCount", 0)
-
-			dbJob.delete(ids=[jobId])
-			processingIds = dbJob.add_texts(
-				texts=[""],
-				metadatas=[{**metadata, "status": "processing"}]
-			)
+			jobId, filePath, retryCount, timestamp = jobs[0]
+			# 実行中のジョブをブロック
+			conn.execute("UPDATE ? SET status = 'processing' WHERE id = ?", [QUEUE_TABLE_NAME, jobId])
 
 			try:
-				if (not filePath) or (not os.path.isfile(filePath)):
+				if not filePath or not os.path.isfile(filePath):
+					conn.execute("DELETE FROM ? WHERE id = ?", [QUEUE_TABLE_NAME, jobId])
 					continue
-				# ファイル内容からテキストを取得したdocument objectを取得
-				doc = getFileText(filePath)
 
-				# メタデータを付与(LLMを使って、簡易説明と分類)
-				appendMetadata(doc)
+				# ファイル読み込み
+				text = getFileText(filePath)
+				
 				# Moder BertのToken数が8192 (8192 * 0.96 = 7864.32文字)のため、分割する
-				text_splitter = CharacterTextSplitter(
-					separator="\n\n",
-					chunk_size=3000,
-					chunk_overlap=200
-				)
-				docs = text_splitter.split_documents(documents=[doc])
+				chunkSize = 3000
+				overlap = 200
+				chunks = [text[i:i + chunkSize] for i in range(0, len(text), chunkSize - overlap)]
 
-				# 同じ文書由来のものを検索する際に、1つ目 (or 2つ目移行がヒットするなら最初)だけを表示するため。
-				for i, chunk in enumerate(docs):
-					chunk.metadata["chunk_index"] = i
+				# sourceには/var/www/html/OllamaFileSearchからの相対パスを入れたいため、filePathを加工
+				source = re.sub(r"^.*?OllamaFileSearch/files", "files", filePath)
+
 				# 既にあったら削除しておく(modifiedの場合だけでいいんだけど、処理しちゃったほうが早い)
-				for d in docs:
-					source = d.metadata.get("source")
-					if source:
-						id2delete = db.get(where={"source": source})
-						if len(id2delete.get("ids")) > 0:
-							db.delete(ids = id2delete.get("ids"))
-				# 実際のinsert
-				db.add_documents(docs)
-				# 成功したらジョブは削除
-				dbJob.delete(ids=processingIds)
+				conn.execute("DELETE FROM ? WHERE source = ? ", [COLLECTION_TABLE_NAME, source])
+
+				# 挿入
+				for i, chunk in enumerate(chunks):
+					embedding = vectorize(chunk)
+					beginning = text[:3000]	# 文字数が溢れないように最初だけをLLMに投げる
+					description = summarize4description(beginning)
+					tags = labeling(beginning)
+					conn.execute("""
+						INSERT INTO ? (documents, embeddings, description, source, chunk_index, total_chunk, tags, lastmod)
+						VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+					""", [COLLECTION_TABLE_NAME, chunk, embedding, description, source, i, len(chunks), tags, datetime.now()])
+
+				# ジョブ削除
+				conn.execute("DELETE FROM ? WHERE id = ?", [QUEUE_TABLE_NAME, jobId])
+
 			except Exception as e:
-				print("Database registration error: ", e)
-				dbJob.delete(ids=processingIds)
-				retryCount += 1
 				if retryCount >= MAX_RETRIES:
-					dbJob.add_texts(
-						texts=[""],
-						metadatas=[{**metadata, "status": "failed", "error": str(e), "retryCount": retryCount}]
-					)
+					conn.execute("""
+						UPDATE ?
+						SET status = 'failed', error = ?, retry_count = ?
+						WHERE id = ?
+					""", [QUEUE_TABLE_NAME, str(e), retryCount, jobId])
 					retryCount = 0
 				else:
-					dbJob.add_texts(
-						texts=[""],
-						metadatas=[{**metadata, "status": "pending", "retryCount": retryCount, "error": str(e)}]
-					)
+					conn.execute("""
+						UPDATE ?
+						SET status = 'pending', retry_count = ?, error = ?
+						WHERE id = ?
+					""", [QUEUE_TABLE_NAME, retryCount, str(e), jobId])
 			time.sleep(SLEEP_INTERVAL * (2 ** (retryCount - 1)))
 
 if __name__ == "__main__":
