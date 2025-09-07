@@ -10,4 +10,5 @@ QUEUE_TABLE_NAME = "queue_table"
 LOCK_FILE = CACHE_PATH + "/fileRegisterQueueLoop.lock"
 YAML_PATH = "/var/www/html/OllamaFileSearch/.config/labelList.yaml"
 OLLAMA_URL = "http://localhost:11434"
+VEC_DIMENSION = 768
 UNCATEGORIZED_LABEL = "未分類"

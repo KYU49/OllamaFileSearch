@@ -25,20 +25,20 @@ def enqueueJob(filePath, action):
 	# 削除イベントはキューに乗せない
 	if action == "deleted":
 		source = re.sub(r"^.*?OllamaFileSearch/files", r"files", filePath)
-		conn.execute("DETETE FROM ? WHERE source = ?", [COLLECTION_TABLE_NAME, source])
+		conn.execute(f"DETETE FROM {COLLECTION_TABLE_NAME} WHERE source = ?", [source])
 		return
 	
 	priority_map = {"added": 1, "modified": 2}
 	priority = priority_map.get(action, 3)
 
-	conn.execute("INSERT INTO ? (file_path, action, status, retry_count, timestamp, error) VALUES (?, ?, 'pending', 0, ?, '')", [QUEUE_TABLE_NAME, filePath, action, datetime.now()])
+	conn.execute(f"INSERT INTO {QUEUE_TABLE_NAME} (file_path, action, status, retry_count, timestamp, error) VALUES (?, ?, 'pending', 0, ?, '')", [filePath, action, datetime.now()])
 	conn.close()
 	workerLoop()
 
 def reregisterAll(path = "/var/www/html/OllamaFileSearch/files"):
 	conn = getDatabase()
 	for filePath in os.listdir(path):
-		conn.execute("INSERT INTO ? (file_path, action, status, retry_count, timestamp, error) VALUES (?, 'modified', 'pending', 0, ?, '')", [QUEUE_TABLE_NAME, filePath, datetime.now()])
+		conn.execute(f"INSERT INTO {QUEUE_TABLE_NAME} (file_path, action, status, retry_count, timestamp, error) VALUES (?, 'modified', 'pending', 0, ?, '')", [filePath, datetime.now()])
 	conn.close()
 	workerLoop()
 
@@ -55,16 +55,16 @@ def workerLoop():
 		conn = getDatabase()
 
 		while True:
-			jobs = conn.execute("SELECT id, file_path, retry_count, timestamp FROM ? WHERE status = 'pending' ORDER BY timestamp ASC LIMIT 1", [QUEUE_TABLE_NAME]).fetchall()
+			jobs = conn.execute(f"SELECT id, file_path, retry_count, timestamp FROM {QUEUE_TABLE_NAME} WHERE status = 'pending' ORDER BY timestamp ASC LIMIT 1").fetchall()
 			if not jobs:
 				return
 			jobId, filePath, retryCount, timestamp = jobs[0]
 			# 実行中のジョブをブロック
-			conn.execute("UPDATE ? SET status = 'processing' WHERE id = ?", [QUEUE_TABLE_NAME, jobId])
+			conn.execute(f"UPDATE {QUEUE_TABLE_NAME} SET status = 'processing' WHERE id = ?", [jobId])
 
 			try:
 				if not filePath or not os.path.isfile(filePath):
-					conn.execute("DELETE FROM ? WHERE id = ?", [QUEUE_TABLE_NAME, jobId])
+					conn.execute(f"DELETE FROM {QUEUE_TABLE_NAME} WHERE id = ?", [jobId])
 					continue
 
 				# ファイル読み込み
@@ -79,7 +79,7 @@ def workerLoop():
 				source = re.sub(r"^.*?OllamaFileSearch/files", "files", filePath)
 
 				# 既にあったら削除しておく(modifiedの場合だけでいいんだけど、処理しちゃったほうが早い)
-				conn.execute("DELETE FROM ? WHERE source = ? ", [COLLECTION_TABLE_NAME, source])
+				conn.execute(f"DELETE FROM {COLLECTION_TABLE_NAME} WHERE source = ? ", [source])
 
 				# 挿入
 				for i, chunk in enumerate(chunks):
@@ -87,28 +87,28 @@ def workerLoop():
 					beginning = text[:3000]	# 文字数が溢れないように最初だけをLLMに投げる
 					description = summarize4description(beginning)
 					tags = labeling(beginning)
-					conn.execute("""
-						INSERT INTO ? (documents, embeddings, description, source, chunk_index, total_chunk, tags, lastmod)
+					conn.execute(f"""
+						INSERT INTO {COLLECTION_TABLE_NAME} (documents, embeddings, description, source, chunk_index, total_chunk, tags, lastmod)
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-					""", [COLLECTION_TABLE_NAME, chunk, embedding, description, source, i, len(chunks), tags, datetime.now()])
+					""", [chunk, embedding, description, source, i, len(chunks), tags, datetime.now()])
 
 				# ジョブ削除
-				conn.execute("DELETE FROM ? WHERE id = ?", [QUEUE_TABLE_NAME, jobId])
+				conn.execute(f"DELETE FROM {COLLECTION_TABLE_NAME} WHERE id = ?", [jobId])
 
 			except Exception as e:
 				if retryCount >= MAX_RETRIES:
-					conn.execute("""
-						UPDATE ?
+					conn.execute(f"""
+						UPDATE {QUEUE_TABLE_NAME}
 						SET status = 'failed', error = ?, retry_count = ?
 						WHERE id = ?
-					""", [QUEUE_TABLE_NAME, str(e), retryCount, jobId])
+					""", [str(e), retryCount, jobId])
 					retryCount = 0
 				else:
-					conn.execute("""
-						UPDATE ?
+					conn.execute(f"""
+						UPDATE {QUEUE_TABLE_NAME}
 						SET status = 'pending', retry_count = ?, error = ?
 						WHERE id = ?
-					""", [QUEUE_TABLE_NAME, retryCount, str(e), jobId])
+					""", [retryCount, str(e), jobId])
 			time.sleep(SLEEP_INTERVAL * (2 ** (retryCount - 1)))
 
 if __name__ == "__main__":
