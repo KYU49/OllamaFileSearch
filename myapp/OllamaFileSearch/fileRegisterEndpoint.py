@@ -4,7 +4,6 @@ import re
 import time
 from datetime import datetime
 from getFileText import getFileText
-from createMetadata import createMetadata
 from constants import COLLECTION_TABLE_NAME, QUEUE_TABLE_NAME, LOCK_FILE
 from getDatabase import getDatabase
 from vectorize import vectorize
