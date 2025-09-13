@@ -96,7 +96,7 @@ sudo nano smb.conf
 comment = SharedDirectoryForAnotherPC
 path = /var/www/html/OllamaFileSearch/files
 available = yes
-public = yes    ; **Attention** 
+public = yes	; **Attention** 
 guest ok = yes  ; For local network use. Adjust these settings as needed if used outside your LAN.
 browsable = yes
 writable = yes
@@ -132,10 +132,10 @@ sudo systemctl restart smbd nmbd
 sudo systemctl enable smbd nmbd
 ```
 * To access **file store files** from Windows, use **Map Network Drive**.
-    - Folder: `\\<IP_ADDRESS>\OllamaFileSearch`
-    - Check **Connect using different credentials**
-    - User Name: `<IP_ADDRESS>\share`
-    - Password: YOUR_PASSWORD
+	- Folder: `\\<IP_ADDRESS>\OllamaFileSearch`
+	- Check **Connect using different credentials**
+	- User Name: `<IP_ADDRESS>\share`
+	- Password: YOUR_PASSWORD
 
 
 # Uninstall

@@ -37,14 +37,15 @@ class SSECallbackHandler:
 
 
 def retrieveSimilarDocs(query: str, k: int = 3):
-	conn = getDatabase()
 	queryVec = vectorize(query)
 	sql = f"""
 		SELECT *, array_cosine_distance(embeddings, ?::FLOAT[{VEC_DIMENSION}]) AS similarity FROM {COLLECTION_TABLE_NAME} ORDER BY similarity DESC LIMIT {k}
 	"""
-	results = conn.execute(sql, [queryVec]).fetchAll
-
-	conn.close()
+	try:
+		conn = getDatabase()
+		results = conn.execute(sql, [queryVec]).fetchAll
+	finally:
+		conn.close()
 	return [row["documents"] for row in results]  # documentsカラムだけ返す
 
 def queryOllama(prompt: str, stream: bool = True, callbacks: List = None):

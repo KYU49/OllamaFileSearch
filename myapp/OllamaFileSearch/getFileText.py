@@ -1,6 +1,5 @@
 from enum import Enum
 from pathlib import Path
-from langchain_core.documents import Document
 
 # Langchain版 参考: https://note.com/jolly_azalea818/n/n763880f1668a
 class Method(Enum):
@@ -9,7 +8,7 @@ class Method(Enum):
 	EXTRACTOUS = 3
 
 # 基本はこれを呼び出す。listではなく、まとめて返す。
-def getFileText(filePath: str, methodType=Method.LANG_CHAIN):
+def getFileText(filePath: str, methodType=Method.MARK_IT_DOWN):
 	match methodType:
 		case Method.LANG_CHAIN:
 			func = getFileTextLangChain
@@ -22,17 +21,19 @@ def getFileText(filePath: str, methodType=Method.LANG_CHAIN):
 	docs = func(filePath)
 
 	# ページ内容を結合
-	fullText = "\n".join(doc.page_content for doc in docs)
-	
-	# メタデータは最初のドキュメントからコピー（必要に応じて調整可能）
-	mergedMetadata = docs[0].metadata.copy()
-	
-	# 新しい Document として結合
-	mergedDoc = Document(
-		page_content=fullText,
-		metadata=mergedMetadata
-	)
-	return mergedDoc
+	if hasattr(docs, "page_content"):
+		from langchain_core.documents import Document
+		fullText = "\n".join(doc.page_content for doc in docs)
+		# メタデータは最初のドキュメントからコピー（必要に応じて調整可能）
+		mergedMetadata = docs[0].metadata.copy()
+		# 新しい Document として結合
+		mergedDoc = Document(
+			page_content=fullText,
+			metadata=mergedMetadata
+		)
+		return mergedDoc
+	else:
+		return docs
 
 
 
@@ -66,7 +67,7 @@ def getFileTextMID(filePath: str):
 	ext = p.suffix.lower()
 
 	match ext:
-		case ".txt" | ".md" | ".html":
+		case ".txt" | ".md":
 			import chardet
 			text = ""
 			# 文字コードの判定
@@ -78,7 +79,7 @@ def getFileTextMID(filePath: str):
 			with open(filePath, "r", encoding=encoding) as file:
 				text = file.read()
 			return text
-		case ".docx" | ".xlsx" | ".pptx" | ".pdf":
+		case ".docx" | ".xlsx" | ".pptx" | ".msg" | ".pdf" | ".html":
 			from markitdown import MarkItDown
 
 			md = MarkItDown(enable_plugins=False)

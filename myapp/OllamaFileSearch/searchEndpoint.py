@@ -1,25 +1,28 @@
 import sys
 import io
 import json
-from ModernBertEmbeddings import ModernBERTEmbeddings
-from constants import DB_PATH, COLLECTION_NAME
-from langchain_chroma.vectorstores import Chroma
+from constants import DB_PATH, COLLECTION_TABLE_NAME, VEC_DIMENSION
+from vectorize import vectorize
+from getDatabase import getDatabase
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 prompt = sys.argv[1]
 
 # Chroma DB準備
-embeddings = ModernBERTEmbeddings()
-db = Chroma(
-	persist_directory=DB_PATH,
-	embedding_function=embeddings,
-	collection_name=COLLECTION_NAME,
-	collection_metadata={"hnsw:space": "cosine"}
-)
+
+embedding = vectorize(prompt)
+try: 
+	conn = getDatabase()
+	queryVec = vectorize(prompt)
+	sql = f"""
+		SELECT source, description, tags, array_cosine_distance(embeddings, ?::FLOAT[{VEC_DIMENSION}]) AS similarity FROM {COLLECTION_TABLE_NAME} ORDER BY similarity DESC LIMIT 20
+	"""
+	results = conn.execute(sql, [queryVec]).fetchAll()
+finally:
+	conn.close()
 
 # 検索
-docsAndScores = db.similarity_search_with_score(prompt, k=20)
-results = [{"documents": getattr(doc, "page_content", getattr(doc, "documents", "")), "metadata": {**doc.metadata, "similarity": 1 - similarity}} for doc, similarity in docsAndScores]
+results = [{**r, "similarity": 1 - r.similarity} for r in results]
 
 print(json.dumps(results, ensure_ascii=False))
