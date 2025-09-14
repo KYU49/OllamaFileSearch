@@ -70,7 +70,7 @@ sudo mkdir .venv
 sudo chown -R root:www-data .venv
 sudo chmod -R 775 .venv
 sudo -u www-data /opt/uv/uv sync
-sudo -u www-data /opt/uv/uv run BertModelInstaller.py
+sudo -u www-data /opt/uv/uv run Installer.py
 
 sudo chown -R root:www-data /usr/local/lib/OllamaFileSearch/fileWatcherHandler.sh
 sudo chmod -R 755 /usr/local/lib/OllamaFileSearch/fileWatcherHandler.sh

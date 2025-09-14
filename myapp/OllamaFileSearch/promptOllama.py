@@ -1,13 +1,15 @@
-import yaml
 import os
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_ollama.llms import OllamaLLM
+import yaml
+import requests
 from constants import OLLAMA_URL, LLM_MODEL, UNCATEGORIZED_LABEL, YAML_PATH
 
 SUMMARY_PROMPT = """
 You are a concise description generator.
-Given an input text extracted from a file, generate a summary in Japanese of exactly 100 characters that clearly explains the file's content and purpose.
+Given an input text extracted from a file, generate a summary in Japanese of around 100 characters that clearly explains the file's content and purpose.
 Output only the summary text, without any labels, extra words, or formatting.
+
+# Input Text
+
 """
 
 LABELING_PROMPT = """
@@ -23,18 +25,29 @@ Passage:
 
 os.environ["NO_PROXY"] = "localhost,127.0.0.1"
 
+
 def summarize4description(text):
-	llm = OllamaLLM(
-		model=LLM_MODEL, 
-		base_url=OLLAMA_URL, 
-		temperature=0,
-		num_ctx=8192	# 8192で14GBくらいになる
-	)
-	return llm.invoke([
-		("system", SUMMARY_PROMPT),
-		("human", text)
-	])
 	
+	#url = f"{OLLAMA_URL}/v1/models/{LLM_MODEL}/generate"
+	url = f"{OLLAMA_URL}/api/generate"
+	headers = {
+		"Content-Type": "application/json",
+	}
+	payload = {
+		"model": LLM_MODEL,
+		"prompt": SUMMARY_PROMPT + text,
+		"stream": False,
+		"temperature": 0,
+		"max_context": 8192
+	}
+
+	response = requests.post(url, json=payload, headers=headers)
+	response.raise_for_status()  # エラーがあれば例外を発生させる
+
+	data = response.json()
+	# Ollamaのレスポンス形式に応じて以下を調整
+	return data.get("response", "")  # 例: "result"キーに生成テキストが入る場合
+
 def labeling(text):
 	tagging_prompt = ChatPromptTemplate.from_template(LABELING_PROMPT)
 	llm = OllamaLLM(model=LLM_MODEL, base_url=OLLAMA_URL)
