@@ -82,11 +82,14 @@ def workerLoop():
 				conn.execute(f"DELETE FROM {COLLECTION_TABLE_NAME} WHERE source = ? ", [source])
 
 				# 挿入
+				description = ""
+				tags = "[]"
 				for i, chunk in enumerate(chunks):
 					embedding = vectorize(chunk)
-					beginning = text[:3000]	# 文字数が溢れないように最初だけをLLMに投げる
-					description = summarize4description(beginning)
-					tags = labeling(beginning)
+					if i == 0:
+						beginning = text[:5000]	# 文字数が溢れないように最初だけをLLMに投げる
+						description = summarize4description(beginning)
+						tags = labeling(beginning)
 					conn.execute(f"""
 						INSERT INTO {COLLECTION_TABLE_NAME} (documents, embeddings, description, source, chunk_index, total_chunks, tags, lastmod)
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?)
