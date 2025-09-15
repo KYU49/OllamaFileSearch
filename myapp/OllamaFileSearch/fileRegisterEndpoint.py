@@ -108,8 +108,8 @@ def workerLoop():
 						UPDATE {QUEUE_TABLE_NAME}
 						SET status = 'pending', retry_count = ?, error = ?
 						WHERE id = ?
-					""", [retryCount, str(e), jobId])
-			time.sleep(SLEEP_INTERVAL * (2 ** (retryCount - 1)))
+					""", [retryCount + 1, str(e), jobId])
+			time.sleep(SLEEP_INTERVAL * (2 ** retryCount)))
 
 if __name__ == "__main__":
 	if len(sys.argv) < 3:
