@@ -1,10 +1,7 @@
 import sys
 import json
 import requests
-import numpy as np
-from datetime import datetime
 from typing import List
-import duckdb
 from constants import COLLECTION_TABLE_NAME, VEC_DIMENSION, OLLAMA_URL, LLM_MODEL
 from getDatabase import getDatabase
 from vectorize import vectorize

@@ -3,7 +3,7 @@ from constants import DB_PATH, COLLECTION_TABLE_NAME, QUEUE_TABLE_NAME, VEC_DIME
 
 def getDatabase():
 	# duckdbにテーブルを先に生成しておく。
-	conn = duckdb.comment(DB_PATH)
+	conn = duckdb.connect(DB_PATH)
 	# 実際にデータを保存するためのテーブル
 	conn.execute("INSTALL vss;")
 	conn.execute("LOAD vss;")
@@ -17,7 +17,7 @@ def getDatabase():
 			source VARCHAR,
 			chunk_index INTEGER,
 			total_chunks INTEGER,
-			tags VARCHAR
+			tags VARCHAR,
 			lastmod TIMESTAMP
 		)
 	""")

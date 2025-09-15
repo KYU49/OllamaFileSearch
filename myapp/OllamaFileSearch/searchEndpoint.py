@@ -9,18 +9,14 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 prompt = sys.argv[1]
 
-# Chroma DB準備
-
 embedding = vectorize(prompt)
-try: 
-	conn = getDatabase()
-	queryVec = vectorize(prompt)
-	sql = f"""
-		SELECT source, description, tags, array_cosine_distance(embeddings, ?::FLOAT[{VEC_DIMENSION}]) AS similarity FROM {COLLECTION_TABLE_NAME} ORDER BY similarity DESC LIMIT 20
-	"""
-	results = conn.execute(sql, [queryVec]).fetchAll()
-finally:
-	conn.close()
+conn = getDatabase()
+queryVec = vectorize(prompt)
+sql = f"""
+	SELECT source, description, tags, array_cosine_distance(embeddings, ?::FLOAT[{VEC_DIMENSION}]) AS similarity FROM {COLLECTION_TABLE_NAME} ORDER BY similarity DESC LIMIT 20
+"""
+results = conn.execute(sql, [queryVec]).fetchall()
+conn.close()
 
 # 検索
 results = [{**r, "similarity": 1 - r.similarity} for r in results]

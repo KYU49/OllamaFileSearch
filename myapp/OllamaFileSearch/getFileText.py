@@ -35,8 +35,6 @@ def getFileText(filePath: str, methodType=Method.MARK_IT_DOWN):
 	else:
 		return docs
 
-
-
 def getFileTextLangChain(filePath: str):
 	import MarkItDownLoader
 	from langchain_community.document_loaders import PyPDFium2Loader, BSHTMLLoader

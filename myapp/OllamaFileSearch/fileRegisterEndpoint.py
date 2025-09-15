@@ -71,7 +71,7 @@ def workerLoop():
 				text = getFileText(filePath)
 				
 				# Moder BertのToken数が8192 (8192 * 0.96 = 7864.32文字)のため、分割する
-				chunkSize = 3000
+				chunkSize = 6000
 				overlap = 200
 				chunks = [text[i:i + chunkSize] for i in range(0, len(text), chunkSize - overlap)]
 
