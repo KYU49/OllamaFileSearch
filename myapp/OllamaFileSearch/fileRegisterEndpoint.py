@@ -93,7 +93,7 @@ def workerLoop():
 					""", [chunk, embedding, description, source, i, len(chunks), tags, datetime.now()])
 
 				# ジョブ削除
-				conn.execute(f"DELETE FROM {COLLECTION_TABLE_NAME} WHERE id = ?", [jobId])
+				conn.execute(f"DELETE FROM {QUEUE_TABLE_NAME} WHERE id = ?", [jobId])
 
 			except Exception as e:
 				print(e)
