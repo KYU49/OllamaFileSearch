@@ -15,10 +15,10 @@ queryVec = vectorize(prompt)
 sql = f"""
 	SELECT source, description, tags, array_cosine_distance(embeddings, ?::FLOAT[{VEC_DIMENSION}]) AS similarity FROM {COLLECTION_TABLE_NAME} ORDER BY similarity DESC LIMIT 20
 """
-results = conn.execute(sql, [queryVec]).fetchall()
+results = conn.execute(sql, [queryVec]).df()
 conn.close()
 
 # 検索
-results = [{**r, "similarity": 1 - r.similarity} for r in results]
+results["similarity"] = 1 - results["similarity"]
 
-print(json.dumps(results, ensure_ascii=False))
+print(results)
