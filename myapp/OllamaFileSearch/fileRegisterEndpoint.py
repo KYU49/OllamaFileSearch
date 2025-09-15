@@ -96,6 +96,7 @@ def workerLoop():
 				conn.execute(f"DELETE FROM {COLLECTION_TABLE_NAME} WHERE id = ?", [jobId])
 
 			except Exception as e:
+				print(e)
 				if retryCount >= MAX_RETRIES:
 					conn.execute(f"""
 						UPDATE {QUEUE_TABLE_NAME}
@@ -109,7 +110,7 @@ def workerLoop():
 						SET status = 'pending', retry_count = ?, error = ?
 						WHERE id = ?
 					""", [retryCount + 1, str(e), jobId])
-			time.sleep(SLEEP_INTERVAL * (2 ** retryCount)))
+			time.sleep(SLEEP_INTERVAL * (2 ** retryCount))
 
 if __name__ == "__main__":
 	if len(sys.argv) < 3:
