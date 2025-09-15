@@ -32,6 +32,7 @@ build/
 # Created database
 **/chromadb/*
 *.duckdb
+*.wal
 
 # Virtual environments
 .venv/
