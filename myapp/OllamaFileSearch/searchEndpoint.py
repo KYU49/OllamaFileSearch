@@ -21,4 +21,4 @@ conn.close()
 # 検索
 results["similarity"] = 1 - results["similarity"]
 
-print(results)
+print(results.to_json(orient="records"))
