@@ -88,7 +88,7 @@ def workerLoop():
 					description = summarize4description(beginning)
 					tags = labeling(beginning)
 					conn.execute(f"""
-						INSERT INTO {COLLECTION_TABLE_NAME} (documents, embeddings, description, source, chunk_index, total_chunk, tags, lastmod)
+						INSERT INTO {COLLECTION_TABLE_NAME} (documents, embeddings, description, source, chunk_index, total_chunks, tags, lastmod)
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 					""", [chunk, embedding, description, source, i, len(chunks), tags, datetime.now()])
 
