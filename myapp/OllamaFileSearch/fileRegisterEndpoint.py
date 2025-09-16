@@ -69,6 +69,23 @@ def workerLoop():
 
 				# ファイル読み込み
 				text = getFileText(filePath)
+
+				# テキストをLLMで整形
+				CLEANER_PROMPT = f"""You are a text cleaner and translator.  
+Your task is to process text extracted from a PDF.  
+Follow these steps carefully:
+
+1. Remove unnecessary line breaks, tags, page numbers, footers, or repeated headers.  
+2. Keep all the information from the original text. Do not drop any details.  
+3. Join sentences naturally so that the text reads smoothly in English.  
+4. If the input text is in Japanese, translate it into English.  
+5. If the input text is already in English, keep it in English but still clean and format it.  
+6. Preserve proper nouns, technical terms, and numbers exactly.  
+
+Output only the cleaned and translated text in English, without any explanation or additional commentary.
+
+Text to process:
+{text}"""
 				
 				# Moder BertのToken数が8192 (8192 * 0.96 = 7864.32文字)のため、分割する
 				chunkSize = 6000
