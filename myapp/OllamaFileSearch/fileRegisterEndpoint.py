@@ -88,7 +88,9 @@ Text to process:
 {text}"""
 				
 				# Moder BertのToken数が8192 (8192 * 0.96 = 7864.32文字)のため、分割する
-				chunkSize = 6000
+				#chunkSize = 6000
+				# Qwen-3-Embedding-0.6B/8BならToken数が32kだから、分割を緩める
+				chunkSize = 30000
 				overlap = 200
 				chunks = [text[i:i + chunkSize] for i in range(0, len(text), chunkSize - overlap)]
 
@@ -104,7 +106,8 @@ Text to process:
 				for i, chunk in enumerate(chunks):
 					embedding = vectorize(chunk)
 					if i == 0:
-						beginning = text[:5000]	# 文字数が溢れないように最初だけをLLMに投げる
+						# beginning = text[:5000]	# 文字数が溢れないように最初だけをLLMに投げる
+						beginning = text		# qwen3.5:9Bならtoken数が262,144 (文庫本余裕)だから、全部投げる。
 						description = summarize4description(beginning)
 						tags = labeling(beginning)
 					conn.execute(f"""

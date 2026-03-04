@@ -15,7 +15,7 @@ def summarize4description(text):
 
 	SUMMARY_PROMPT = f"""
 You are a concise description generator.
-Given an input text extracted from a file, generate a summary in Japanese of around 100 characters that clearly explains the file's content and purpose.
+Given an input text extracted from a file, generate a summary in Japanese of around 200 characters that clearly explains the file's content and purpose.
 Output only the summary text, without any labels, extra words, or formatting.
 
 # Input Text
