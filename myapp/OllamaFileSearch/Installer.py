@@ -1,6 +1,6 @@
 import torch
 from transformers import AutoTokenizer, AutoModel
-from constants import EMBEDDING_MODEL, CACHE_PATH
+from constants import EMBEDDING_MODEL, CACHE_PATH, IS_QWEN
 
 def main():
 	# Embedding用のモデルを先にダウンロードしておく。

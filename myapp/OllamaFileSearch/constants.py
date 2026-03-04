@@ -3,7 +3,7 @@ import os
 # LLM_MODEL = "gpt-oss:20b"
 LLM_MODEL = "qwen3.5:9B"
 # EMBEDDING_MODEL = "sbintuitions/modernbert-ja-310m"
-EMBEDDING_MODEL = "Qwen/Qwen-3-Embedding-4B"
+EMBEDDING_MODEL = "Qwen/Qwen3-Embedding-4B"
 IS_QWEN = True
 PY_SCRIPT_PATH = os.path.dirname(os.path.abspath(__file__))
 CACHE_PATH = PY_SCRIPT_PATH + "/.cache"
