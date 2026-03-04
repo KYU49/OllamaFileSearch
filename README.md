@@ -82,7 +82,7 @@ sudo systemctl start fileWatcher.service
 
 # Setting File Storage Directory
 
-## Instll Samba server
+## Install Samba server
 ```bash
 sudo apt install samba
 cd /etc/samba/
