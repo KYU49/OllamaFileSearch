@@ -25,7 +25,7 @@ def enqueueJob(filePath, action):
 	# 削除イベントはキューに乗せない
 	if action == "deleted":
 		source = re.sub(r"^.*?OllamaFileSearch/files", r"files", filePath)
-		conn.execute(f"DETETE FROM {COLLECTION_TABLE_NAME} WHERE source = ?", [source])
+		conn.execute(f"DELETE FROM {COLLECTION_TABLE_NAME} WHERE source = ?", [source])
 		return
 	
 	priority_map = {"added": 1, "modified": 2}
