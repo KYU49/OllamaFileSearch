@@ -1,12 +1,30 @@
 import duckdb
+import os
 from constants import DB_PATH, COLLECTION_TABLE_NAME, QUEUE_TABLE_NAME, VEC_DIMENSION
 
 def getDatabase():
 	# duckdbにテーブルを先に生成しておく。
 	conn = duckdb.connect(DB_PATH)
+
+	# --- 拡張機能の設定 ---
+    # 拡張機能の保存先をプロジェクト内のフォルダに固定する（www-dataが書き込める場所）
+	ext_dir = os.path.join(os.path.dirname(os.path.abspath(DB_PATH)), ".duckdb_extensions")
+	os.makedirs(ext_dir, exist_ok=True)
+	conn.execute(f"SET extension_directory = '{ext_dir}';")
+	
 	# 実際にデータを保存するためのテーブル
-	conn.execute("INSTALL vss;")
-	conn.execute("LOAD vss;")
+	try: 
+		conn.execute("LOAD vss;")
+	except:
+		# ロードに失敗した場合のみインストール（ダウンロード）を試みる
+		try:
+			print("Installing vss extension...")
+			conn.execute("INSTALL vss;")
+			conn.execute("LOAD vss;")
+		except Exception as e:
+			# ネットワークエラー等で失敗した場合は、詳細を表示して落とす
+			raise RuntimeError(f"DuckDB 'vss' extension could not be loaded or installed: {e}")
+
 	conn.execute("SET hnsw_enable_experimental_persistence = true;")
 	conn.execute(f"""
 		CREATE TABLE IF NOT EXISTS {COLLECTION_TABLE_NAME} (
