@@ -10,6 +10,12 @@ User=www-data
 Restart=always
 RestartSec=5s
 
+# 必要に応じて、コメントアウトし、プロキシサーバーのIPとポートを指定すること
+# Environment="http_proxy=http://proxy-server:port"
+# Environment="https_proxy=http://proxy-server:port"
+# ローカル通信をプロキシから除外設定
+# Environment="no_proxy=localhost,127.0.0.1"
+
 # 標準出力をジャーナルに出力: `sudo journalctl -u fileWatcher.service -f`で確認可能
 StandardOutput=journal
 StandardError=journal
