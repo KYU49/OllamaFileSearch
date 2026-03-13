@@ -37,7 +37,7 @@ Output only the summary text, without any labels, extra words, or formatting.<|i
 		}
 	}
 
-	response = requests.post(url, json=payload, headers=headers)
+	response = requests.post(url, json=payload, headers=headers, proxies={"http": None, "https": None})
 	response.raise_for_status()  # エラーがあれば例外を発生させる
 
 	data = response.json()
@@ -75,7 +75,7 @@ Output the result as a JSON array of label names.
 		}
 	}
 
-	response = requests.post(url, json=payload, headers=headers)
+	response = requests.post(url, json=payload, headers=headers, proxies={"http": None, "https": None})
 	response.raise_for_status()  # エラーがあれば例外を発生させる
 
 	data = response.json()
