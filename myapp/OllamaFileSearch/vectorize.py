@@ -2,19 +2,24 @@ import torch
 import torch.nn.functional as F
 from transformers import AutoTokenizer, AutoModel, pipeline
 import numpy as np
-from constants import EMBEDDING_MODEL, IS_QWEN
+from constants import EMBEDDING_MODEL, IS_QWEN, CACHE_PATH
 
 # # Requirements
 # uv add flash-attn --no-build-isolation
 # uv add protobuf
 # uv add sentencepiece
 
-tokenizer = AutoTokenizer.from_pretrained(EMBEDDING_MODEL, trust_remote_code=True)
+tokenizer = AutoTokenizer.from_pretrained(
+	EMBEDDING_MODEL, 
+	trust_remote_code=True, 
+	cache_dir=CACHE_PATH
+)
 model = AutoModel.from_pretrained(
     EMBEDDING_MODEL, 
     torch_dtype=torch.bfloat16, 
     device_map="auto", # 自動でGPUに割り当て
-    trust_remote_code=True
+    trust_remote_code=True, 
+	cache_dir=CACHE_PATH
 ).eval()
 
 def vectorize(text):
@@ -52,9 +57,17 @@ def vectorize(text):
 
 	else: 
 		# BERTトークナイザーのロード
-		tokenizer = AutoTokenizer.from_pretrained(EMBEDDING_MODEL, torch_dtype=torch.bfloat16)
+		tokenizer = AutoTokenizer.from_pretrained(
+			EMBEDDING_MODEL, 
+			torch_dtype=torch.bfloat16, 
+			cache_dir=CACHE_PATH
+		)
 		# BERTモデルのロード
-		model = AutoModel.from_pretrained(EMBEDDING_MODEL, torch_dtype=torch.bfloat16)
+		model = AutoModel.from_pretrained(
+			EMBEDDING_MODEL, 
+			torch_dtype=torch.bfloat16, 
+			cache_dir=CACHE_PATH
+		)
 		extractor = pipeline(task="feature-extraction", model=model, tokenizer = tokenizer)
 
 		# BERTでベクトル化
