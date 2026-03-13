@@ -46,7 +46,7 @@ def retrieveSimilarDocs(query: str, k: int = 3):
 	return [row["documents"] for row in results]  # documentsカラムだけ返す
 
 def queryOllama(prompt: str, stream: bool = True, callbacks: List = None):
-	url = f"{OLLAMA_URL}/v1/complete"
+	url = f"{OLLAMA_URL}/api/generate"
 	data = {
 		"model": LLM_MODEL,
 		"prompt": prompt,
@@ -61,13 +61,15 @@ def queryOllama(prompt: str, stream: bool = True, callbacks: List = None):
 					tokenData = json.loads(line.decode("utf-8"))
 					if callbacks:
 						for cb in callbacks:
-							cb.on_llm_new_token(tokenData.get("token", ""))
+							cb.on_llm_new_token(tokenData.get("response", ""))
+					if tokenData.get("done"):
+						break
 		if callbacks:
 			for cb in callbacks:
 				cb.on_llm_end(None)
 	else:
 		r = requests.post(url, json=data)
-		return r.json()["completion"]
+		return r.json()["response"]
 
 def runRag(userPrompt: str):
 	# 1. 類似文書取得
