@@ -12,14 +12,16 @@ from constants import EMBEDDING_MODEL, IS_QWEN, CACHE_PATH
 tokenizer = AutoTokenizer.from_pretrained(
 	EMBEDDING_MODEL, 
 	trust_remote_code=True, 
-	cache_dir=CACHE_PATH
+	cache_dir=CACHE_PATH,
+	local_files_only=True
 )
 model = AutoModel.from_pretrained(
     EMBEDDING_MODEL, 
     torch_dtype=torch.bfloat16, 
     device_map="auto", # 自動でGPUに割り当て
     trust_remote_code=True, 
-	cache_dir=CACHE_PATH
+	cache_dir=CACHE_PATH,
+	local_files_only=True
 ).eval()
 
 def vectorize(text):
@@ -60,13 +62,15 @@ def vectorize(text):
 		tokenizer = AutoTokenizer.from_pretrained(
 			EMBEDDING_MODEL, 
 			torch_dtype=torch.bfloat16, 
-			cache_dir=CACHE_PATH
+			cache_dir=CACHE_PATH,
+			local_files_only=True
 		)
 		# BERTモデルのロード
 		model = AutoModel.from_pretrained(
 			EMBEDDING_MODEL, 
 			torch_dtype=torch.bfloat16, 
-			cache_dir=CACHE_PATH
+			cache_dir=CACHE_PATH,
+			local_files_only=True
 		)
 		extractor = pipeline(task="feature-extraction", model=model, tokenizer = tokenizer)
 
