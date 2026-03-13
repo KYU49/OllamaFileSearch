@@ -33,7 +33,7 @@ def vectorize(text):
 		inputs = tokenizer(
 			text,
 			padding = True,
-			truncationg = True,
+			truncation = True,
 			max_length = 32768,
 			return_tensors="pt"
 		)
