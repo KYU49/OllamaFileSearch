@@ -59,7 +59,7 @@ def vectorize(text):
 
 	else: 
 		# BERTトークナイザーのロード
-		tokenizer = AutoTokenizer.from_pretrained(
+		tokenizerBert = AutoTokenizer.from_pretrained(
 			EMBEDDING_MODEL, 
 			torch_dtype=torch.bfloat16, 
 			cache_dir=CACHE_PATH,
@@ -72,7 +72,7 @@ def vectorize(text):
 			cache_dir=CACHE_PATH,
 			local_files_only=True
 		)
-		extractor = pipeline(task="feature-extraction", model=model, tokenizer = tokenizer)
+		extractor = pipeline(task="feature-extraction", model=model, tokenizer = tokenizerBert)
 
 		# BERTでベクトル化
 		features = extractor(text)
