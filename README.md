@@ -61,12 +61,10 @@ sudo chown -R root:www-data myapp
 sudo chmod -R 775 myapp
 
 cd myapp/OllamaFileSearch
-sudo chown -R root:www-data ./
-sudo chmod -R 755 ./
-sudo chmod -R 775 .cache
-sudo mkdir .venv
-sudo chown -R root:www-data .venv
-sudo chmod -R 775 .venv
+sudo chown www-data:www-data .
+mkdir -p .venv .cache
+sudo chown -R www-data:www-data .venv .cache
+sudo chmod 755 . .venv .cache
 sudo -u www-data /opt/uv/uv sync
 sudo -u www-data /opt/uv/uv run Installer.py
 
