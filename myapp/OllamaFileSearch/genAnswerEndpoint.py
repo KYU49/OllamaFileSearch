@@ -55,7 +55,7 @@ def queryOllama(prompt: str, stream: bool = True, callbacks: List = None):
 		"num_ctx": 8192
 	}
 	if stream:
-		with requests.post(url, json=data, stream=True) as r:
+		with requests.post(url, json=data, stream=True, proxies={"http": None, "https": None}) as r:
 			for line in r.iter_lines():
 				if line:
 					tokenData = json.loads(line.decode("utf-8"))
@@ -68,7 +68,7 @@ def queryOllama(prompt: str, stream: bool = True, callbacks: List = None):
 			for cb in callbacks:
 				cb.on_llm_end(None)
 	else:
-		r = requests.post(url, json=data)
+		r = requests.post(url, json=data, proxies={"http": None, "https": None})
 		return r.json()["response"]
 
 def runRag(userPrompt: str):
