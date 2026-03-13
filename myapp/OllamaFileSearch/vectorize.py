@@ -18,11 +18,11 @@ tokenizer = AutoTokenizer.from_pretrained(
 model = AutoModel.from_pretrained(
     EMBEDDING_MODEL, 
     torch_dtype=torch.bfloat16, 
-    device_map="auto", # 自動でGPUに割り当て
+    #device_map="auto", # 自動でGPUに割り当て
     trust_remote_code=True, 
 	cache_dir=CACHE_PATH,
 	local_files_only=True
-).eval()
+).to("cuda" if torch.cuda.is_available() else "cpu").eval()
 
 def vectorize(text):
 	if IS_QWEN:
