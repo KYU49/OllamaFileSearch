@@ -5,7 +5,8 @@ WATCH_DIR="/var/www/html/OllamaFileSearch/files"
 # 無視したい一時ファイルパターン
 IGNORE_REGEX='(\.sw[pox]$|~$|\.tmp$|\.goutputstream.*$|^\.#)'
 
-inotifywait -m -r -e create -e close_write -e delete --format '%e %w%f' "$WATCH_DIR" | while read EVENT CHANGED_FILE
+#inotifywait -m -r -e create -e close_write -e delete --format '%e %w%f' "$WATCH_DIR" | while read EVENT CHANGED_FILE
+inotifywait -m -r -e close_write -e delete -e moved_to -e moved_from --format '%e %w%f' "$WATCH_DIR" | while read EVENT CHANGED_FILE
 do
 	# 一時ファイルは無視
 	if [[ "$CHANGED_FILE" =~ $IGNORE_REGEX ]]; then
