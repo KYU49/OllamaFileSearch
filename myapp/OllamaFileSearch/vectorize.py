@@ -66,13 +66,13 @@ def vectorize(text):
 			local_files_only=True
 		)
 		# BERTモデルのロード
-		model = AutoModel.from_pretrained(
+		modelBert = AutoModel.from_pretrained(
 			EMBEDDING_MODEL, 
 			torch_dtype=torch.bfloat16, 
 			cache_dir=CACHE_PATH,
 			local_files_only=True
 		)
-		extractor = pipeline(task="feature-extraction", model=model, tokenizer = tokenizerBert)
+		extractor = pipeline(task="feature-extraction", model=modelBert, tokenizer = tokenizerBert)
 
 		# BERTでベクトル化
 		features = extractor(text)
