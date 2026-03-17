@@ -94,22 +94,22 @@ class SearchView {
 		const alreadyAdded = [];
 		// 検索結果リスト
 		searchResults.forEach(r => {
-			if(!alreadyAdded.includes(r.metadata.source)){
+			if(!alreadyAdded.includes(r.source)){
 				const item = document.createElement("div");
 				item.className = "result-item";
-				item.dataset.label = r.metadata.label;
+				item.dataset.label = r.label;
 				const source = document.createElement("a");
-				source.innerText = r.metadata.source;
-				source.href = r.metadata.source;
+				source.innerText = r.source;
+				source.href = r.source;
 				source.target = "_blank";
 				const description = document.createElement("div");
-				description.innerText = r.metadata.description;
+				description.innerText = r.description;
 				const etcContainer = document.createElement("div")
 				const similarity = document.createElement("span");
-				similarity.innerText = r.metadata.similarity;
+				similarity.innerText = r.similarity;
 				similarity.classList.add("search_result_similarity");
 				const label = document.createElement("span");
-				label.innerText = r.metadata.label;
+				label.innerText = r.label;
 				label.classList.add("search_result_label");
 				etcContainer.appendChild(similarity);
 				etcContainer.appendChild(label)
@@ -118,7 +118,7 @@ class SearchView {
 				item.appendChild(description);
 				item.appendChild(etcContainer);
 				this.searchResultsDiv.appendChild(item);
-				alreadyAdded.push(r.metadata.source);
+				alreadyAdded.push(r.source);
 			}
 		});
 	}

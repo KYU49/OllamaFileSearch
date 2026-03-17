@@ -13,7 +13,7 @@ embedding = vectorize(prompt)
 conn = getDatabase()
 queryVec = vectorize(prompt)
 sql = f"""
-	SELECT source, description, tags, array_cosine_distance(embeddings, ?::FLOAT[{VEC_DIMENSION}]) AS similarity FROM {COLLECTION_TABLE_NAME} ORDER BY similarity DESC LIMIT 20
+	SELECT source, description, tags, array_cosine_distance(embeddings, ?::FLOAT[{VEC_DIMENSION}]) AS similarity FROM {COLLECTION_TABLE_NAME} ORDER BY similarity ASC LIMIT 20
 """
 results = conn.execute(sql, [queryVec]).df()
 conn.close()
