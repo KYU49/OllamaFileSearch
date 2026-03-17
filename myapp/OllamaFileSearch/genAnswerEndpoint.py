@@ -35,12 +35,12 @@ class SSECallbackHandler:
 
 def retrieveSimilarDocs(query: str, k: int = 3):
 	queryVec = vectorize(query)
-	if hasattr(queryVec, "flatten"):
+	if hasattr(queryVec, "tolist"):
 		queryVec = queryVec.tolist()
 	else:
 		queryVec = queryVec[0]
 	sql = f"""
-		SELECT *, array_cosine_distance(embeddings, ?::FLOAT[{VEC_DIMENSION}]) AS similarity FROM {COLLECTION_TABLE_NAME} ORDER BY similarity DESC LIMIT {k}
+		SELECT document, array_cosine_distance(embeddings, ?::FLOAT[{VEC_DIMENSION}]) AS similarity FROM {COLLECTION_TABLE_NAME} ORDER BY similarity ASC LIMIT {k}
 	"""
 	try:
 		conn = getDatabase()
