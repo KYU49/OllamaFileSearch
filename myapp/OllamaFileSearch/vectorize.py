@@ -55,7 +55,7 @@ def vectorize(text):
 		# 検索精度を保証するために必須。ベクトルの長さを1に揃える
 		embeddings = F.normalize(embeddings, p=2, dim=1)
 		
-		return embeddings.cpu().numpy()
+		return embeddings[0].cpu().numpy()
 
 	else: 
 		# BERTトークナイザーのロード

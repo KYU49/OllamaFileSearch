@@ -36,7 +36,7 @@ class SSECallbackHandler:
 def retrieveSimilarDocs(query: str, k: int = 3):
 	queryVec = vectorize(query)
 	if hasattr(queryVec, "flatten"):
-		queryVec = queryVec.flatten().toList()
+		queryVec = queryVec.tolist()
 	else:
 		queryVec = queryVec[0]
 	sql = f"""
