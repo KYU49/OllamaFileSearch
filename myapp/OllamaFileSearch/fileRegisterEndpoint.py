@@ -21,25 +21,29 @@ SLEEP_INTERVAL = 5
 
 #TODO https://voluntas.ghost.io/duckdb-japanese-full-text-search/ を参考に、DuckDBを用いた、全文検索に変更。hybrid検索はこっちも参照。https://voluntas.ghost.io/duckdb-hybrid-search/
 def enqueueJob(filePath, action):
-	conn = getDatabase()
-	# 削除イベントはキューに乗せない
-	if action == "deleted":
-		source = re.sub(r"^.*?OllamaFileSearch/files", r"files", filePath)
-		conn.execute(f"DELETE FROM {COLLECTION_TABLE_NAME} WHERE source = ?", [source])
-		return
-	
-	priority_map = {"added": 1, "modified": 2}
-	priority = priority_map.get(action, 3)
+	try:
+		conn = getDatabase()
+		# 削除イベントはキューに乗せない
+		if action == "deleted":
+			source = re.sub(r"^.*?OllamaFileSearch/files", r"files", filePath)
+			conn.execute(f"DELETE FROM {COLLECTION_TABLE_NAME} WHERE source = ?", [source])
+			return
+		
+		priority_map = {"added": 1, "modified": 2}
+		priority = priority_map.get(action, 3)
 
-	conn.execute(f"INSERT INTO {QUEUE_TABLE_NAME} (file_path, action, status, retry_count, timestamp, error) VALUES (?, ?, 'pending', 0, ?, '')", [filePath, action, datetime.now()])
-	conn.close()
+		conn.execute(f"INSERT INTO {QUEUE_TABLE_NAME} (file_path, action, status, retry_count, timestamp, error) VALUES (?, ?, 'pending', 0, ?, '')", [filePath, action, datetime.now()])
+	finally:
+		conn.close()
 	workerLoop()
 
 def reregisterAll(path = "/var/www/html/OllamaFileSearch/files"):
-	conn = getDatabase()
-	for filePath in os.listdir(path):
-		conn.execute(f"INSERT INTO {QUEUE_TABLE_NAME} (file_path, action, status, retry_count, timestamp, error) VALUES (?, 'modified', 'pending', 0, ?, '')", [filePath, datetime.now()])
-	conn.close()
+	try:
+		conn = getDatabase()
+		for filePath in os.listdir(path):
+			conn.execute(f"INSERT INTO {QUEUE_TABLE_NAME} (file_path, action, status, retry_count, timestamp, error) VALUES (?, 'modified', 'pending', 0, ?, '')", [filePath, datetime.now()])
+	finally:
+		conn.close()
 	workerLoop()
 
 
