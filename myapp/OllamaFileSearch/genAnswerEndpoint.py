@@ -40,7 +40,7 @@ def retrieveSimilarDocs(query: str, k: int = 3):
 	else:
 		queryVec = queryVec[0]
 	sql = f"""
-		SELECT document, array_cosine_distance(embeddings, ?::FLOAT[{VEC_DIMENSION}]) AS similarity FROM {COLLECTION_TABLE_NAME} ORDER BY similarity ASC LIMIT {k}
+		SELECT documents, array_cosine_distance(embeddings, ?::FLOAT[{VEC_DIMENSION}]) AS similarity FROM {COLLECTION_TABLE_NAME} ORDER BY similarity ASC LIMIT {k}
 	"""
 	try:
 		conn = getDatabase(readOnly = True)
