@@ -67,7 +67,6 @@ Output the result as a JSON array of label names.
 		"model": LLM_MODEL,
 		"prompt": LABELING_PROMPT,
 		"stream": False,
-		"format": "json",
 		"options": {
 			"num_predict": -1,
 			"temperature": 0,
@@ -119,6 +118,7 @@ if __name__ == "__main__":
     print(f"結果:\n{summary}")
 
     print("\n" + "="*30)
+    print(loadLabels())
     print("ラベル付けテスト実行中...")
     labels = labeling(test_text)
     print(f"結果:\n{labels}")
