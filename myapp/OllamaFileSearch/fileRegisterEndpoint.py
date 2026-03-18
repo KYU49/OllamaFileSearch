@@ -2,6 +2,7 @@ import sys
 import os
 import re
 import time
+import numpy as np
 from datetime import datetime
 from getFileText import getFileText
 from constants import COLLECTION_TABLE_NAME, QUEUE_TABLE_NAME, LOCK_FILE
@@ -109,6 +110,9 @@ Text to process:
 				tags = "[]"
 				for i, chunk in enumerate(chunks):
 					embedding = vectorize(chunk)
+					if embedding is None or np.isnan(embedding).any():
+						print(f"Skip: Invalid embedding for {source}")
+						continue
 					if i == 0:
 						# beginning = text[:5000]	# 文字数が溢れないように最初だけをLLMに投げる
 						beginning = text		# qwen3.5:9Bならtoken数が262,144 (文庫本余裕)だから、全部投げる。

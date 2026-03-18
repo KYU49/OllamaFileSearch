@@ -40,9 +40,10 @@ flush();
 
 // LLM回答を生成
 // $cmd = "/opt/uv/uv run genAnswerEndpoint.py " . $prompt;
-$cmd = "/opt/uv/uv run python3 -u genAnswerEndpoint.py " . $prompt;
+$cmd = "/opt/uv/uv run python3 -u genAnswerEndpoint.py " . $prompt . " 2>&1";
 $process = popen($cmd, 'r');
-if($process) {
+
+/*if($process) {
 	while (!feof($process)) {
 		$line = fgets($process);
 		$tline = trim($line);
@@ -54,6 +55,25 @@ if($process) {
 		}
 	}
 	pclose($process);
+}*/
+
+if($process) {
+    while (!feof($process)) {
+        $line = fgets($process);
+        $tline = trim($line);
+        if ($line !== false && $tline !== '') {
+            // デバッグ用：もしデータが [DONE] でも JSON でもない場合は、そのままエラーとして送る
+            echo "event: answer_token\n";
+            if (strpos($tline, '{') === 0 || $tline === "[DONE]") {
+                echo "data: " . $tline . "\n\n";
+            } else {
+                // Python側で起きたエラー（Tracebackなど）をブラウザに流す
+                echo "data: " . json_encode(["token" => "<div style='color:red'>Python Error: " . htmlspecialchars($tline) . "</div>"]) . "\n\n";
+            }
+            flush();
+        }
+    }
+    pclose($process);
 }
 
 
