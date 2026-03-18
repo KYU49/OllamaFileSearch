@@ -2,9 +2,12 @@ import duckdb
 import os
 from constants import DB_PATH, COLLECTION_TABLE_NAME, QUEUE_TABLE_NAME, VEC_DIMENSION
 
-def getDatabase():
+def getDatabase(readOnly = False):
 	# duckdbにテーブルを先に生成しておく。
-	conn = duckdb.connect(DB_PATH)
+	conn = duckdb.connect(DB_PATH, read_only = readOnly)
+	if readOnly:
+		conn.execute("LOAD vss;")
+		return conn
 
 	# --- 拡張機能の設定 ---
     # 拡張機能の保存先をプロジェクト内のフォルダに固定する（www-dataが書き込める場所）

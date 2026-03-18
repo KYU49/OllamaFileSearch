@@ -10,7 +10,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 prompt = sys.argv[1]
 
 embedding = vectorize(prompt)
-conn = getDatabase()
+conn = getDatabase(readOnly = True)
 queryVec = vectorize(prompt)
 sql = f"""
 	SELECT source, description, tags, array_cosine_distance(embeddings, ?::FLOAT[{VEC_DIMENSION}]) AS similarity FROM {COLLECTION_TABLE_NAME} ORDER BY similarity ASC LIMIT 20

@@ -43,7 +43,7 @@ def retrieveSimilarDocs(query: str, k: int = 3):
 		SELECT document, array_cosine_distance(embeddings, ?::FLOAT[{VEC_DIMENSION}]) AS similarity FROM {COLLECTION_TABLE_NAME} ORDER BY similarity ASC LIMIT {k}
 	"""
 	try:
-		conn = getDatabase()
+		conn = getDatabase(readOnly = True)
 		results = conn.execute(sql, [queryVec]).fetchall()
 	finally:
 		conn.close()
