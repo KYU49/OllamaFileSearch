@@ -5,10 +5,7 @@ from constants import DB_PATH, COLLECTION_TABLE_NAME, QUEUE_TABLE_NAME, VEC_DIME
 def getDatabase(readOnly = False):
 	# duckdbにテーブルを先に生成しておく。
 	conn = duckdb.connect(DB_PATH, read_only = readOnly)
-	if readOnly:
-		conn.execute("LOAD vss;")
-		return conn
-
+	
 	# --- 拡張機能の設定 ---
     # 拡張機能の保存先をプロジェクト内のフォルダに固定する（www-dataが書き込める場所）
 	ext_dir = os.path.join(os.path.dirname(os.path.abspath(DB_PATH)), ".duckdb_extensions")
@@ -18,15 +15,19 @@ def getDatabase(readOnly = False):
 	# 実際にデータを保存するためのテーブル
 	try: 
 		conn.execute("LOAD vss;")
-	except:
+	except Exception as e:
+		if readOnly:
+			raise RuntimeError(f"VSS extension not found in {ext_dir}. Run registration first.") from e
 		# ロードに失敗した場合のみインストール（ダウンロード）を試みる
 		try:
-			print("Installing vss extension...")
 			conn.execute("INSTALL vss;")
 			conn.execute("LOAD vss;")
-		except Exception as e:
+		except Exception as e2:
 			# ネットワークエラー等で失敗した場合は、詳細を表示して落とす
-			raise RuntimeError(f"DuckDB 'vss' extension could not be loaded or installed: {e}")
+			raise RuntimeError(f"DuckDB 'vss' extension could not be loaded or installed: {e2}")
+
+	if readOnly:
+		return conn
 
 	conn.execute("SET hnsw_enable_experimental_persistence = true;")
 	conn.execute(f"""
