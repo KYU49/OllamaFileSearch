@@ -39,9 +39,9 @@ echo "data: " . ($searchResults ?: "[]") . "\n\n";
 flush();
 
 // LLM回答を生成
-$cmd = "/opt/uv/uv run genAnswerEndpoint.py " . $prompt;
+// $cmd = "/opt/uv/uv run genAnswerEndpoint.py " . $prompt;
+$cmd = "/opt/uv/uv run python3 -u genAnswerEndpoint.py " . $prompt;
 $process = popen($cmd, 'r');
-
 if($process) {
 	while (!feof($process)) {
 		$line = fgets($process);
@@ -55,6 +55,7 @@ if($process) {
 	}
 	pclose($process);
 }
+
 
 // 終了を通知
 echo "event: end\n";
