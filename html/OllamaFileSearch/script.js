@@ -97,7 +97,7 @@ class SearchView {
 			if(!alreadyAdded.includes(r.source)){
 				const item = document.createElement("div");
 				item.className = "result-item";
-				item.dataset.label = r.label;
+				item.dataset.label = r.tag;
 				const source = document.createElement("a");
 				source.innerText = r.source;
 				source.href = r.source;
@@ -109,7 +109,7 @@ class SearchView {
 				similarity.innerText = r.similarity;
 				similarity.classList.add("search_result_similarity");
 				const label = document.createElement("span");
-				label.innerText = r.label;
+				label.innerText = r.tag;
 				label.classList.add("search_result_label");
 				etcContainer.appendChild(similarity);
 				etcContainer.appendChild(label)

@@ -114,8 +114,8 @@ Text to process:
 						print(f"Skip: Invalid embedding for {source}")
 						continue
 					if i == 0:
-						# beginning = text[:5000]	# 文字数が溢れないように最初だけをLLMに投げる
-						beginning = text		# qwen3.5:9Bならtoken数が262,144 (文庫本余裕)だから、全部投げる。
+						beginning = text[:5000]	# 文字数が溢れないように最初だけをLLMに投げる
+						# beginning = text		# qwen3.5:9Bならtoken数が262,144 (文庫本余裕)だから、全部投げる。
 						description = summarize4description(beginning)
 						tags = labeling(beginning)
 					conn.execute(f"""

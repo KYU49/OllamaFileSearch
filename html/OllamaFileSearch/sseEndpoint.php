@@ -43,7 +43,7 @@ flush();
 $cmd = "/opt/uv/uv run python3 -u genAnswerEndpoint.py " . $prompt . " 2>&1";
 $process = popen($cmd, 'r');
 
-/*if($process) {
+if($process) {
 	while (!feof($process)) {
 		$line = fgets($process);
 		$tline = trim($line);
@@ -55,9 +55,9 @@ $process = popen($cmd, 'r');
 		}
 	}
 	pclose($process);
-}*/
+}
 
-if($process) {
+/*if($process) {
     while (!feof($process)) {
         $line = fgets($process);
         $tline = trim($line);
@@ -74,7 +74,7 @@ if($process) {
         }
     }
     pclose($process);
-}
+}*/
 
 
 // 終了を通知

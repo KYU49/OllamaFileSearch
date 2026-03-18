@@ -1,5 +1,6 @@
 import os
 import sys
+import re
 import yaml
 import requests
 import json
@@ -79,7 +80,13 @@ Output the result as a JSON array of label names.
 	response.raise_for_status()  # エラーがあれば例外を発生させる
 
 	data = response.json()
-	return data.get("response", "").strip()
+
+	raw_res = data.get("response", "").strip()
+	# 出力が安定しなkった時のために、正規表現で[]の中身だけを抽出
+	match = re.search(r'\[.*\]', raw_res, re.DOTALL)
+	if match:
+		return match.group(0)
+	return "[]" # 失敗時は空の配列を返す
 
 
 def loadLabels():
