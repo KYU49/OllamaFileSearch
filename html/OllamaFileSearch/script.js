@@ -105,7 +105,7 @@ class SearchView {
 					console.error("Tags parse error:", e, r.tags);
 				}
 
-				item.dataset.label = JSON.stringify(tagsArray);
+				item.dataset.tags = JSON.stringify(tagsArray);
 
 				const source = document.createElement("a");
 				source.innerText = r.source;
@@ -266,9 +266,9 @@ class SearchViewModel {
 		const activeLabels = this.model.labels.filter((_, i) => this.model.labelsSelected[i]);
 
 		document.querySelectorAll(".result-item").forEach(item => {
-			const itemTags = JSON.parse(item.dataset.tags || "[]");
+			const itemTags = JSON.parse(item.dataset.tags || "[]").map(l => l.replaceAll(/\s/g, ""));
 			const isVisible = activeLabels.length === 0 || 
-			activeLabels.some(activeLabel => itemTags.includes(activeLabel));
+			activeLabels.some(activeLabel => itemTags.includes(activeLabel.replaceAll(/\s/g, "")));
 			item.classList.toggle("hidden", !isVisible);
 		});
 	}
