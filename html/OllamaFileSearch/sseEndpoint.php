@@ -39,8 +39,8 @@ echo "data: " . ($searchResults ?: "[]") . "\n\n";
 flush();
 
 // LLM回答を生成
-// $cmd = "/opt/uv/uv run genAnswerEndpoint.py " . $prompt;
-$cmd = "/opt/uv/uv run python3 -u genAnswerEndpoint.py " . $prompt . " 2>&1";
+$cmd = "/opt/uv/uv run genAnswerEndpoint.py " . $prompt;
+// $cmd = "/opt/uv/uv run python3 -u genAnswerEndpoint.py " . $prompt . " 2>&1";
 $process = popen($cmd, 'r');
 
 if($process) {

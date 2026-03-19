@@ -124,7 +124,7 @@ class SearchView {
 				tagsArray.forEach(tagName => {
 					const tagSpan = document.createElement("span");
 					tagSpan.innerText = tagName;
-					tagSpan.classListadd("search_result_label");
+					tagSpan.classList.add("search_result_label");
 					etcContainer.appendChild(tagSpan);
 				});
 
