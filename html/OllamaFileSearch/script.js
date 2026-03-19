@@ -97,22 +97,36 @@ class SearchView {
 			if(!alreadyAdded.includes(r.source)){
 				const item = document.createElement("div");
 				item.className = "result-item";
-				item.dataset.label = r.tag;
+
+				let tagsArray = [];
+				try {
+					tagsArray = JSON.parse(r.tags || "[]").map(t => t.trim());
+				} catch (e) {
+					console.error("Tags parse error:", e, r.tags);
+				}
+
+				item.dataset.label = JSON.stringify(tagsArray);
+
 				const source = document.createElement("a");
 				source.innerText = r.source;
 				source.href = r.source;
 				source.target = "_blank";
+
 				const description = document.createElement("div");
 				description.innerText = r.description;
 				const etcContainer = document.createElement("div")
 				const similarity = document.createElement("span");
+
 				similarity.innerText = r.similarity;
 				similarity.classList.add("search_result_similarity");
-				const label = document.createElement("span");
-				label.innerText = r.tag;
-				label.classList.add("search_result_label");
 				etcContainer.appendChild(similarity);
-				etcContainer.appendChild(label)
+
+				tagsArray.forEach(tagName => {
+					const tagSpan = document.createElement("span");
+					tagSpan.innerText = tagName;
+					tagSpan.classListadd("search_result_label");
+					etcContainer.appendChild(tagSpan);
+				});
 
 				item.appendChild(source);
 				item.appendChild(description);
@@ -246,13 +260,16 @@ class SearchViewModel {
 
 	filterByLabel(label) {
 		const selected = this.model.labels.indexOf(label);
-		this.model.labelsSelected[selected] = !this.model.labelsSelected[selected];
+		if (selected !== -1) {
+			this.model.labelsSelected[selected] = !this.model.labelsSelected[selected]
+		}
+		const activeLabels = this.model.labels.filter((_, i) => this.model.labelsSelected[i]);
+
 		document.querySelectorAll(".result-item").forEach(item => {
-			let visible = this.model.labelsSelected[this.model.labels.indexOf(item.dataset.label)];
-			item.classList.toggle("hidden", !visible);
-			if(this.model.labelsSelected.every(value => !value)){
-				item.classList.toggle("hidden", false);
-			}
+			const itemTags = JSON.parse(item.dataset.tags || "[]");
+			const isVisible = activeLabels.length === 0 || 
+			activeLabels.some(activeLabel => itemTags.includes(activeLabel));
+			item.classList.toggle("hidden", !isVisible);
 		});
 	}
 	isLabelSelected(label) {
