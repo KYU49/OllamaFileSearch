@@ -110,7 +110,7 @@ class SearchView {
 				const source = document.createElement("a");
 				source.innerText = r.source;
 				source.href = r.source;
-				source.target = "_blank";
+				source.download = "";	// ファイル名を変更したい場合は、ここに文字列
 
 				const description = document.createElement("div");
 				description.innerText = r.description;
