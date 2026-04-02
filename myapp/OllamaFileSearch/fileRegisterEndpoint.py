@@ -6,7 +6,7 @@ import numpy as np
 from datetime import datetime
 from getFileText import getFileText
 from constants import COLLECTION_TABLE_NAME, QUEUE_TABLE_NAME, LOCK_FILE
-from getDatabase import getDatabase
+from getDatabase import getDatabase, create_snapshot
 from vectorize import vectorize
 from promptOllama import summarize4description, labeling
 
@@ -125,6 +125,9 @@ Text to process:
 
 				# ジョブ削除
 				conn.execute(f"DELETE FROM {QUEUE_TABLE_NAME} WHERE id = ?", [jobId])
+				# 書き込みが一段落したらスナップショットを更新
+				create_snapshot(conn)
+				
 
 			except Exception as e:
 				print(e)

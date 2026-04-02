@@ -1,10 +1,14 @@
 import duckdb
 import os
+import shutil
 from constants import DB_PATH, COLLECTION_TABLE_NAME, QUEUE_TABLE_NAME, VEC_DIMENSION
 
+SNAPSHOT_PATH = DB_PATH + ".snapshot"
+
 def getDatabase(readOnly = False):
+	target_path = SNAPSHOT_PATH if readOnly and os.path.exists(SNAPSHOT_PATH) else DB_PATH
 	# duckdbにテーブルを先に生成しておく。
-	conn = duckdb.connect(DB_PATH, read_only = readOnly)
+	conn = duckdb.connect(target_path, read_only = readOnly)
 	
 	# --- 拡張機能の設定 ---
     # 拡張機能の保存先をプロジェクト内のフォルダに固定する（www-dataが書き込める場所）
@@ -62,3 +66,17 @@ def getDatabase(readOnly = False):
 		)
 	""")
 	return conn
+
+def create_snapshot(conn):
+    """
+    書き込み完了後に呼び出し、現在のDB状態を読み取り専用ファイルとして保存する
+    """
+    # 1. 未書き込みのデータをディスクに強制フラッシュ
+    conn.execute("CHECKPOINT;")
+    
+    # 2. ファイルをコピーする（書き込み中でもCHECKPOINT後なら安全にコピー可能）
+    # コピー中の読み取りエラーを防ぐため、一時ファイルにコピーしてからリネームするのが安全
+    tmp_snapshot = SNAPSHOT_PATH + ".tmp"
+    shutil.copy2(DB_PATH, tmp_snapshot)
+    os.replace(tmp_snapshot, SNAPSHOT_PATH)
+    print(f"Snapshot created at {SNAPSHOT_PATH}")
